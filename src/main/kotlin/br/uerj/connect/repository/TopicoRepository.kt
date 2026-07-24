@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface TopicoRepository : JpaRepository<Topico, Long> {
-    // O Spring Data JPA já cria automaticamente métodos como findAll(), save(), findById(), deleteById()
+    fun findByCategoriaIdOrderByDataCriacaoDesc(categoriaId: Long): List<Topico>
+    fun findAllByOrderByDataCriacaoDesc(): List<Topico>
 }

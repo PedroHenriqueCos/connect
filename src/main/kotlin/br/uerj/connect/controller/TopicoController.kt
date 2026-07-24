@@ -2,49 +2,39 @@ package br.uerj.connect.controller
 
 import br.uerj.connect.dto.CriarTopicoRequest
 import br.uerj.connect.dto.TopicoResponse
-import br.uerj.connect.model.Topico
-import br.uerj.connect.repository.TopicoRepository
+import br.uerj.connect.service.TopicoService
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
+@Tag(name = "Tópicos do Fórum", description = "Endpoints para criação, listagem e votação de tópicos (estilo Reddit)")
 @RestController
 @RequestMapping("/api/topicos")
-@CrossOrigin(origins = ["*"]) // Libera o acesso para o Frontend HTML/JS rodando no Live Server
-class TopicoController(
-    private val topicoRepository: TopicoRepository
-) {
+@CrossOrigin(origins = ["*"])
+class TopicoController(private val topicoService: TopicoService) {
 
-    // Rota GET: Retorna a lista de todos os tópicos
+    @Operation(summary = "Listar todos os tópicos ordenados por data de criação")
     @GetMapping
     fun listarTodos(): ResponseEntity<List<TopicoResponse>> {
-        val topicos = topicoRepository.findAll().map { topico ->
-            TopicoResponse(
-                id = topico.id,
-                titulo = topico.titulo,
-                conteudo = topico.conteudo
-            )
-        }
-        return ResponseEntity.ok(topicos)
+        return ResponseEntity.ok(topicoService.listarTodos())
     }
 
-    // Rota POST: Recebe um JSON do Frontend e salva um novo tópico no banco
+    @Operation(summary = "Criar um novo tópico no fórum")
     @PostMapping
     fun criar(@Valid @RequestBody request: CriarTopicoRequest): ResponseEntity<TopicoResponse> {
-        val novoTopico = Topico(
-            titulo = request.titulo,
-            conteudo = request.conteudo
-        )
-        
-        val topicoSalvo = topicoRepository.save(novoTopico)
+        val topicoCriado = topicoService.criar(request)
+        return ResponseEntity.status(HttpStatus.CREATED).body(topicoCriado)
+    }
 
-        val response = TopicoResponse(
-            id = topicoSalvo.id,
-            titulo = topicoSalvo.titulo,
-            conteudo = topicoSalvo.conteudo
-        )
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response)
+    @Operation(summary = "Votar em um tópico (Upvote = +1 / Downvote = -1)")
+    @PatchMapping("/{id}/votar")
+    fun votar(
+        @PathVariable id: Long,
+        @RequestParam valor: Int
+    ): ResponseEntity<TopicoResponse> {
+        return ResponseEntity.ok(topicoService.votar(id, valor))
     }
 }

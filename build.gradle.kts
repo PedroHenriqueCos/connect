@@ -27,6 +27,7 @@ dependencies {
 	implementation("tools.jackson.module:jackson-module-kotlin")
 	implementation("io.github.cdimascio:dotenv-java:3.0.0")
 	runtimeOnly("org.postgresql:postgresql")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
 	testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-validation-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
