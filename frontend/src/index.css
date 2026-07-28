@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+@theme {
+  --color-uerj-blue: #1b4873;
+  --color-uerj-blue-dark: #133454;
+  --color-uerj-yellow: #f5c10a;
+  --color-uerj-yellow-hover: #d9aa08;
+}
