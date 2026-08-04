@@ -1,50 +1,65 @@
-import { Search, PlusCircle, Bell, User } from 'lucide-react';
+import { useState } from 'react';
+import { Search, Bell, Plus, User } from 'lucide-react';
+import { CreateTopicModal } from './CreateTopicModal';
 import logoImg from '../assets/logo.png';
 
 export function Header() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
-    <header className="bg-uerj-blue text-white shadow-md sticky top-0 z-50 border-b border-uerj-blue-dark">
-      <div className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between gap-6">
-        
-        {/* Logo Com Destaque Maior */}
-        <div className="flex items-center cursor-pointer min-w-[280px] h-20 relative overflow-visible">
-          <img 
-            src={logoImg} 
-            alt="Connect UERJ Logo" 
-            className="h-48 w-auto object-contain max-w-none absolute left-0 top-[52%] -translate-y-[44%] scale-140 origin-left hover:scale-145 transition-transform duration-200" 
-          />
-        </div>
-
-        {/* Campo de Busca */}
-        <div className="flex-1 max-w-lg mx-4">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Pesquisar dúvidas, disciplinas, estágios..."
-              className="w-full bg-uerj-blue-dark/90 text-white placeholder-gray-300 rounded-full py-3 pl-12 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-uerj-yellow border border-white/10 transition-all shadow-inner"
+    <>
+      <header className="bg-uerj-blue text-white sticky top-0 z-40 shadow-md py-12">
+        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between gap-6 relative">
+          
+          {/* Container da Logo (Ancoragem e Espaço Reservado) */}
+          <div className="relative min-w-[280px] h-12 flex items-center">
+            <img 
+              src={logoImg} 
+              alt="Connect UERJ" 
+              className="h-48 w-auto object-contain max-w-none absolute left-0 top-[52%] -translate-y-[44%] scale-140 origin-left hover:scale-145 transition-transform duration-200"
             />
-            <Search className="absolute left-4 top-3.5 h-5 w-5 text-gray-300" />
           </div>
-        </div>
 
-        {/* Botões de Ação */}
-        <div className="flex items-center gap-4">
-          <button className="flex items-center gap-2 bg-uerj-yellow text-uerj-blue-dark font-bold px-6 py-3 rounded-full hover:bg-uerj-yellow-hover transition-all text-sm shadow-md hover:shadow-lg active:scale-95">
-            <PlusCircle className="h-5 w-5" />
-            <span className="hidden md:inline">Novo Tópico</span>
-          </button>
-
-          <button className="p-3 hover:bg-uerj-blue-dark rounded-full transition-colors text-gray-200 relative">
-            <Bell className="h-5 w-5" />
-            <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse"></span>
-          </button>
-
-          <div className="w-11 h-11 rounded-full bg-uerj-blue-dark border-2 border-uerj-yellow flex items-center justify-center font-bold text-uerj-yellow cursor-pointer hover:border-white transition-all shadow-md">
-            <User className="h-6 w-6 text-white" />
+          {/* Barra de Busca Global */}
+          <div className="flex-1 max-w-md mx-4">
+            <div className="relative">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-blue-200" />
+              <input 
+                type="text" 
+                placeholder="Pesquisar dúvidas, disciplinas, estágios..."
+                className="w-full bg-uerj-blue-dark/50 border border-white/10 text-white text-sm pl-10 pr-4 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-uerj-yellow/50 transition-all placeholder:text-blue-200/70"
+              />
+            </div>
           </div>
-        </div>
 
-      </div>
-    </header>
+          {/* Ações do Usuário */}
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => setIsModalOpen(true)}
+              className="flex items-center gap-2 bg-uerj-yellow hover:bg-uerj-yellow-hover text-uerj-blue-dark px-4 py-2.5 rounded-xl text-xs font-bold shadow-sm transition-colors whitespace-nowrap"
+            >
+              <Plus className="h-4 w-4 stroke-[3]" />
+              <span>Novo Tópico</span>
+            </button>
+
+            <button className="p-2.5 text-blue-100 hover:bg-white/10 rounded-xl transition-colors relative">
+              <Bell className="h-5 w-5" />
+              <span className="absolute top-2 right-2 w-2 h-2 bg-uerj-yellow rounded-full ring-2 ring-uerj-blue" />
+            </button>
+
+            <button className="p-2 text-blue-100 hover:bg-white/10 rounded-xl transition-colors border border-white/20">
+              <User className="h-5 w-5" />
+            </button>
+          </div>
+
+        </div>
+      </header>
+
+      {/* Modal de Criação de Tópico */}
+      <CreateTopicModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+      />
+    </>
   );
 }
