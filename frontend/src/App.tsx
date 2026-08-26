@@ -1,73 +1,90 @@
+import { useState } from 'react';
 import { Header } from './components/Header';
 import { Feed } from './components/Feed';
-import { Info, Calendar, Utensils } from 'lucide-react';
+import { Profile } from './components/Profile';
+import { CreateTopicModal } from './components/CreateTopicModal';
+import { Utensils, BookOpen, MessageSquare, AlertCircle } from 'lucide-react';
 
 export function App() {
+  const [currentView, setCurrentView] = useState<'feed' | 'profile'>('feed');
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
   return (
-    <div className="min-h-screen bg-slate-50 text-gray-900 font-sans">
-      <Header />
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans antialiased">
+      
+      {/* Header com navegação conectada */}
+      <Header 
+        onOpenNewTopic={() => setIsCreateModalOpen(true)}
+        onOpenProfile={() => setCurrentView('profile')}
+        onGoToFeed={() => setCurrentView('feed')}
+      />
 
-      <main className="max-w-7xl mx-auto px-6 py-8">
-        {/* Banner de Boas-Vindas */}
-        <section className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-uerj-blue">
-              Bem-vindo ao <span className="text-uerj-yellow-hover">Connect UERJ</span>! 🎓
-            </h1>
-            <p className="text-gray-600 text-sm mt-1">
-              O espaço centralizado para trocar ideias, tirar dúvidas sobre disciplinas e ficar por dentro das novidades do campus.
-            </p>
-          </div>
-        </section>
-
-        {/* Layout Grid: Feed Principal + Sidebar Lateral */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
-          {/* Coluna Principal (Feed de Tópicos - 2 colunas no desktop) */}
-          <section className="lg:col-span-2">
-            <Feed />
-          </section>
-
-          {/* Coluna Lateral (Sidebar informativa) */}
-          <aside className="space-y-6">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        {/* Renderização Condicional: Feed ou Perfil */}
+        {currentView === 'profile' ? (
+          <Profile onBackToFeed={() => setCurrentView('feed')} />
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             
-            {/* Card do RU */}
-            <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-              <div className="flex items-center gap-2 font-bold text-uerj-blue mb-3">
-                <Utensils className="h-5 w-5 text-uerj-yellow" />
-                <h3>Aviso do RU</h3>
-              </div>
-              <p className="text-xs text-gray-600 leading-relaxed mb-3">
-                Horário do almoço: 11h às 14h30. Não se esqueça de apresentar a carteirinha estudantil atualizada!
-              </p>
-              <button className="w-full bg-slate-100 hover:bg-slate-200 text-uerj-blue text-xs font-semibold py-2 rounded-xl transition-colors">
-                Ver Cardápio Completo
-              </button>
+            {/* Coluna Principal: Feed */}
+            <div className="lg:col-span-3 space-y-6">
+              <Feed />
             </div>
 
-            {/* Card de Links Rápidos */}
-            <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-              <div className="flex items-center gap-2 font-bold text-uerj-blue mb-3">
-                <Calendar className="h-5 w-5 text-uerj-yellow" />
-                <h3>Links Úteis UERJ</h3>
+            {/* Coluna Lateral: Acesso Rápido & Informes */}
+            <aside className="space-y-6">
+              
+              {/* Card RU */}
+              <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 space-y-4">
+                <div className="flex items-center gap-2.5 text-uerj-blue font-bold text-sm">
+                  <Utensils className="h-4 w-4" />
+                  <h3>Restaurante Universitário</h3>
+                </div>
+                <div className="text-xs space-y-2 text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                  <p className="font-semibold text-slate-800">Almoço de Hoje:</p>
+                  <p>Arroz, Feijão Preto, Frango Grelhado com Legumes e Salada Mista.</p>
+                  <div className="pt-1 flex items-center justify-between font-medium text-[11px] text-slate-500">
+                    <span>Fila estimada: ~10 min</span>
+                    <span className="text-emerald-600 font-bold">Aberto</span>
+                  </div>
+                </div>
+                <button className="w-full text-center text-xs font-semibold text-uerj-blue hover:text-uerj-blue-dark py-1 cursor-pointer transition-colors">
+                  Ver cardápio da semana →
+                </button>
               </div>
-              <ul className="text-xs text-gray-600 space-y-2.5">
-                <li className="hover:text-uerj-blue cursor-pointer flex items-center gap-2">
-                  <Info className="h-3.5 w-3.5" /> Calendário Acadêmico
-                </li>
-                <li className="hover:text-uerj-blue cursor-pointer flex items-center gap-2">
-                  <Info className="h-3.5 w-3.5" /> Acesso ao Aluno Online
-                </li>
-                <li className="hover:text-uerj-blue cursor-pointer flex items-center gap-2">
-                  <Info className="h-3.5 w-3.5" /> Biblioteca Central (BDTD)
-                </li>
-              </ul>
-            </div>
 
-          </aside>
+              {/* Card Avisos Rápidos */}
+              <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 space-y-4">
+                <div className="flex items-center gap-2.5 text-amber-600 font-bold text-sm">
+                  <AlertCircle className="h-4 w-4" />
+                  <h3>Avisos Acadêmicos</h3>
+                </div>
+                <div className="space-y-3 text-xs">
+                  <div className="border-l-2 border-amber-500 pl-3 space-y-0.5">
+                    <p className="font-semibold text-slate-800">Renovação de Matrícula</p>
+                    <p className="text-slate-500 text-[11px]">Período de ajuste abre no SAG-UERJ próxima segunda.</p>
+                  </div>
+                  <div className="border-l-2 border-uerj-blue pl-3 space-y-0.5">
+                    <p className="font-semibold text-slate-800">Biblioteca Central</p>
+                    <p className="text-slate-500 text-[11px]">Horário estendido até às 21h durante o período de provas.</p>
+                  </div>
+                </div>
+              </div>
 
-        </div>
+            </aside>
+
+          </div>
+        )}
+
       </main>
+
+      {/* Modal de Criação de Tópico */}
+      <CreateTopicModal 
+        isOpen={isCreateModalOpen} 
+        onClose={() => setIsCreateModalOpen(false)} 
+      />
+
     </div>
   );
 }

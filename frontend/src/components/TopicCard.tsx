@@ -17,7 +17,7 @@ export interface TopicProps {
   title: string;
   content: string;
   likesCount: number;
-  commentsCount: number;
+  commentsCount?: number;
   createdAt: string;
   initialComments?: Comment[];
 }
