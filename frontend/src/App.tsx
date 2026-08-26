@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { Header } from './components/Header';
 import { Feed } from './components/Feed';
 import { Profile } from './components/Profile';
+import { Disciplines } from './components/Disciplines';
 import { CreateTopicModal } from './components/CreateTopicModal';
-import { Utensils, BookOpen, MessageSquare, AlertCircle } from 'lucide-react';
+import { Utensils, BookOpen, AlertCircle, Sparkles } from 'lucide-react';
 
 export function App() {
-  const [currentView, setCurrentView] = useState<'feed' | 'profile'>('feed');
+  const [currentView, setCurrentView] = useState<'feed' | 'profile' | 'disciplines'>('feed');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   return (
@@ -21,10 +22,24 @@ export function App() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        {/* Renderização Condicional: Feed ou Perfil */}
-        {currentView === 'profile' ? (
+        {/* Renderização Condicional de Telas */}
+        {currentView === 'profile' && (
           <Profile onBackToFeed={() => setCurrentView('feed')} />
-        ) : (
+        )}
+
+        {currentView === 'disciplines' && (
+          <div className="space-y-6">
+            <button
+              onClick={() => setCurrentView('feed')}
+              className="inline-flex items-center gap-2 text-xs font-semibold text-uerj-blue hover:text-uerj-blue-dark bg-white px-3.5 py-2 rounded-xl shadow-sm border border-slate-100 transition-colors cursor-pointer"
+            >
+              ← Voltar ao Feed Principal
+            </button>
+            <Disciplines />
+          </div>
+        )}
+
+        {currentView === 'feed' && (
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             
             {/* Coluna Principal: Feed */}
@@ -35,6 +50,31 @@ export function App() {
             {/* Coluna Lateral: Acesso Rápido & Informes */}
             <aside className="space-y-6">
               
+              {/* Card Disciplinas & Avaliações */}
+              <div 
+                onClick={() => setCurrentView('disciplines')}
+                className="bg-gradient-to-br from-uerj-blue to-uerj-blue-dark text-white rounded-2xl p-5 shadow-sm border border-blue-900/10 space-y-3 cursor-pointer hover:shadow-md hover:scale-[1.02] transition-all group select-none"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center border border-white/20">
+                    <BookOpen className="h-5 w-5 text-uerj-yellow" />
+                  </div>
+                  <span className="flex items-center gap-1 text-[10px] font-bold bg-uerj-yellow text-uerj-blue px-2 py-0.5 rounded-md">
+                    <Sparkles className="h-3 w-3" /> NOVO
+                  </span>
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm leading-tight">Guia de Disciplinas</h3>
+                  <p className="text-xs text-blue-200 mt-1 leading-relaxed">
+                    Drives com provas antigas, resumos e avaliações de matérias.
+                  </p>
+                </div>
+                <div className="text-xs font-semibold text-uerj-yellow group-hover:translate-x-1 transition-transform flex items-center gap-1">
+                  <span>Acessar acervo acadêmico</span>
+                  <span>→</span>
+                </div>
+              </div>
+
               {/* Card RU */}
               <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 space-y-4">
                 <div className="flex items-center gap-2.5 text-uerj-blue font-bold text-sm">
