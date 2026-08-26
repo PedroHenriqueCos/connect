@@ -3,13 +3,12 @@ import {
   BookOpen, 
   Search, 
   Star, 
-  FileText, 
   ExternalLink, 
   MessageSquare, 
-  TrendingUp, 
   Plus,
   ThumbsUp,
-  FolderGit2
+  FolderGit2,
+  MapPin
 } from 'lucide-react';
 
 interface Review {
@@ -38,65 +37,65 @@ interface Discipline {
 const DISCIPLINES_DATA: Discipline[] = [
   {
     id: '1',
-    code: 'INF1001',
-    name: 'Algoritmos e Programação',
-    department: 'Departamento de Informática e Ciência da Computação (DICC)',
+    code: 'ZO-INF101',
+    name: 'Algoritmos e Estrutura de Dados I',
+    department: 'FCEE - Faculdade de Ciências Exatas e Engenharias (Campo Grande)',
     period: '1º Período',
-    avgRating: 4.6,
-    totalReviews: 28,
+    avgRating: 4.7,
+    totalReviews: 32,
     difficulty: 'Média',
     driveUrl: 'https://drive.google.com',
     reviews: [
       {
         id: 'r1',
         author: 'Estudante Anônimo',
-        period: 'Cursado em 2025/1',
+        period: 'Cursado em 2025/1 (UERJ-ZO)',
         rating: 5,
-        comment: 'Façam todas as listas semanais! As provas cobram muito a lógica que é trabalhada nos exercícios práticos.',
-        likes: 12,
-        tags: ['Listas Importantes', 'Boa Didática']
+        comment: 'Façam todas as listas no laboratório de informática! As avaliações cobram bastante ponteiros e alocação dinâmica.',
+        likes: 14,
+        tags: ['Listas Práticas', 'Laboratório UERJ-ZO']
       },
       {
         id: 'r2',
         author: 'Estudante Anônimo',
         period: 'Cursado em 2024/2',
         rating: 4,
-        comment: 'A matéria é tranquila se você não deixar acumular matéria antes da P1.',
-        likes: 6,
+        comment: 'A matéria é muito bem estruturada se praticar código toda semana.',
+        likes: 8,
         tags: ['Estudo Contínuo']
       }
     ]
   },
   {
     id: '2',
-    code: 'INF1015',
-    name: 'Redes de Computadores I',
-    department: 'Departamento de Informática e Ciência da Computação (DICC)',
+    code: 'ZO-INF205',
+    name: 'Redes de Computadores e Segurança',
+    department: 'FCEE - Faculdade de Ciências Exatas e Engenharias (Campo Grande)',
     period: '5º Período',
-    avgRating: 4.8,
-    totalReviews: 19,
+    avgRating: 4.9,
+    totalReviews: 24,
     difficulty: 'Difícil',
     driveUrl: 'https://drive.google.com',
     reviews: [
       {
         id: 'r3',
         author: 'Estudante Anônimo',
-        period: 'Cursado em 2025/2',
+        period: 'Cursado em 2025/2 (UERJ-ZO)',
         rating: 5,
-        comment: 'Foque muito no modelo OSI, arquitetura TCP/IP e cálculo de sub-redes IPv4. Os resumos do Drive ajudam muito.',
-        likes: 15,
-        tags: ['Cálculo de Sub-redes', 'Topologias']
+        comment: 'Foco total em cálculo de sub-redes IPv4/IPv6, roteamento e segurança lógica (VLANs e Firewalls). O drive tem provas antigas comentadas!',
+        likes: 18,
+        tags: ['Sub-redes', 'Segurança Lógica', 'Drives UERJ-ZO']
       }
     ]
   },
   {
     id: '3',
-    code: 'MAT1020',
+    code: 'ZO-MAT101',
     name: 'Cálculo Diferencial e Integral I',
-    department: 'Instituto de Matemática e Estatística (IME)',
+    department: 'FCEE - Faculdade de Ciências Exatas e Engenharias (Campo Grande)',
     period: '1º Período',
-    avgRating: 3.2,
-    totalReviews: 45,
+    avgRating: 3.4,
+    totalReviews: 51,
     difficulty: 'Muito Difícil',
     driveUrl: 'https://drive.google.com',
     reviews: [
@@ -105,9 +104,9 @@ const DISCIPLINES_DATA: Discipline[] = [
         author: 'Estudante Anônimo',
         period: 'Cursado em 2025/1',
         rating: 3,
-        comment: 'Muitos reprovam de bobeira em limites e derivadas. Assistam monitorias toda semana!',
-        likes: 22,
-        tags: ['Vá às Monitorias', 'Provas Antigas']
+        comment: 'Aproveitem as monitorias no campus de Campo Grande. As provas exigem domínio de derivadas e limites trigonométricos.',
+        likes: 27,
+        tags: ['Monitoria UERJ-ZO', 'Provas Antigas']
       }
     ]
   }
@@ -129,12 +128,17 @@ export function Disciplines() {
       {/* Banner de Apresentação */}
       <div className="bg-gradient-to-r from-uerj-blue to-uerj-blue-dark rounded-2xl p-6 text-white shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="space-y-1">
-          <h2 className="text-xl font-bold flex items-center gap-2">
-            <BookOpen className="h-5 w-5 text-uerj-yellow" />
-            Guia de Disciplinas & Avaliações
-          </h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-xl font-bold flex items-center gap-2">
+              <BookOpen className="h-5 w-5 text-uerj-yellow" />
+              Guia de Disciplinas & Avaliações
+            </h2>
+            <span className="text-[10px] font-bold bg-white/20 px-2 py-0.5 rounded-full flex items-center gap-1">
+              <MapPin className="h-3 w-3 text-uerj-yellow" /> UERJ Zona Oeste
+            </span>
+          </div>
           <p className="text-xs text-blue-100 max-w-xl">
-            Consulte avaliações de disciplinas, links de drives com provas antigas e resumos compartilhados por outros alunos da UERJ.
+            Acervo acadêmico com provas antigas, resumos e avaliações de disciplinas do Campus Campo Grande (FCEE & FCBS).
           </p>
         </div>
         <button className="bg-uerj-yellow hover:bg-yellow-400 text-uerj-blue font-bold px-4 py-2.5 rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-colors cursor-pointer shrink-0">
@@ -149,19 +153,19 @@ export function Disciplines() {
         {/* Coluna da Esquerda: Lista de Matérias */}
         <div className="space-y-4">
           
-          {/* Barra de Busca de Disciplinas */}
+          {/* Barra de Busca */}
           <div className="relative">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Buscar por código ou nome..."
+              placeholder="Buscar por código ou nome (UERJ-ZO)..."
               className="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-uerj-blue transition-all shadow-sm"
             />
           </div>
 
-          {/* Cards Rápidos de Disciplinas */}
+          {/* Cards Rápidos */}
           <div className="space-y-3">
             {filteredDisciplines.map((item) => {
               const isSelected = selectedDiscipline?.id === item.id;
@@ -211,11 +215,10 @@ export function Disciplines() {
           </div>
         </div>
 
-        {/* Coluna da Direita: Detalhes & Avaliações da Matéria Selecionada */}
+        {/* Coluna da Direita: Detalhes da Matéria */}
         <div className="lg:col-span-2 space-y-5">
           {selectedDiscipline ? (
             <>
-              {/* Card de Detalhes da Matéria */}
               <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
@@ -235,7 +238,6 @@ export function Disciplines() {
                     </p>
                   </div>
 
-                  {/* Link Drive de Provas/Resumos */}
                   <a
                     href={selectedDiscipline.driveUrl}
                     target="_blank"
@@ -243,12 +245,12 @@ export function Disciplines() {
                     className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-sm transition-colors cursor-pointer shrink-0"
                   >
                     <FolderGit2 className="h-4 w-4 text-uerj-yellow" />
-                    <span>Drive de Materiais</span>
+                    <span>Drive de Materiais ZO</span>
                     <ExternalLink className="h-3 w-3 text-slate-400" />
                   </a>
                 </div>
 
-                {/* Métricas Rápidas */}
+                {/* Métricas */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-3 border-t border-slate-100">
                   <div className="bg-slate-50 p-3 rounded-xl">
                     <p className="text-[11px] text-slate-500">Média Geral</p>
@@ -259,7 +261,7 @@ export function Disciplines() {
                   </div>
 
                   <div className="bg-slate-50 p-3 rounded-xl">
-                    <p className="text-[11px] text-slate-500">Nível de Dificuldade</p>
+                    <p className="text-[11px] text-slate-500">Dificuldade</p>
                     <p className="font-bold text-slate-800 text-sm mt-0.5">
                       {selectedDiscipline.difficulty}
                     </p>
@@ -274,11 +276,11 @@ export function Disciplines() {
                 </div>
               </div>
 
-              {/* Seção de Avaliações / Relatos dos Alunos */}
+              {/* Seção de Relatos */}
               <div className="space-y-3">
                 <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
                   <MessageSquare className="h-4 w-4 text-uerj-blue" />
-                  Relatos e Dicas de Alunos
+                  Dicas de Alunos da UERJ-ZO
                 </h3>
 
                 <div className="space-y-3">
@@ -328,7 +330,7 @@ export function Disciplines() {
             </>
           ) : (
             <div className="bg-white p-12 rounded-2xl border border-slate-100 text-center">
-              <p className="text-sm font-semibold text-slate-600">Selecione uma disciplina para ver os detalhes</p>
+              <p className="text-sm font-semibold text-slate-600">Selecione uma disciplina</p>
             </div>
           )}
         </div>
