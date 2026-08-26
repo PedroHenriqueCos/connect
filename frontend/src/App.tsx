@@ -5,17 +5,91 @@ import { Profile } from './components/Profile';
 import { Disciplines } from './components/Disciplines';
 import { CreateTopicModal } from './components/CreateTopicModal';
 import { RuMenuModal } from './components/RuMenuModal';
+import type { TopicProps } from './components/TopicCard';
 import { Utensils, BookOpen, AlertCircle, Sparkles, MapPin } from 'lucide-react';
 
+const INITIAL_TOPICS: TopicProps[] = [
+  {
+    id: '1',
+    author: 'Lucas Silva',
+    course: 'Engenharia de Produção',
+    category: 'Estágios & Vagas',
+    title: 'Vaga de Estágio em Suporte e Infraestrutura na PGE-RJ',
+    content: 'Pessoal, abriram novas vagas de estágio para a área de TI na Procuradoria Geral do Estado! Alguém aqui da UERJ-ZO já fez a prova de seleção deles para dar umas dicas?',
+    likesCount: 12,
+    createdAt: 'Há 15 min',
+    initialComments: [
+      {
+        id: 'c1',
+        author: 'Pedro Henrique Andrade',
+        course: 'Ciência da Computação (FCEE)',
+        content: 'Fiz a prova no semestre passado! Cobram bastante sobre redes básicas, comandos de terminal e suporte ao usuário.',
+        createdAt: 'Há 5 min'
+      }
+    ]
+  },
+  {
+    id: '2',
+    author: 'Mariana Souza',
+    course: 'Ciências Biológicas (FCBS)',
+    category: 'Restaurante (RU)',
+    title: 'Cardápio do RU - Campus Campo Grande',
+    content: 'Alguém sabe dizer se a fila do RU tá muito grande agora pro almoço? E qual a opção vegana de hoje?',
+    likesCount: 24,
+    createdAt: 'Há 1 hora',
+    initialComments: []
+  },
+  {
+    id: '3',
+    author: 'Gabriel Lima',
+    course: 'Ciência da Computação (FCEE)',
+    category: 'Disciplinas',
+    title: 'Grupo de estudos para Algoritmos e Estrutura de Dados I',
+    content: 'Estamos montando um grupo de estudos no laboratório da UERJ-ZO para tirar dúvidas sobre ponteiros e alocação dinâmica. Quem tiver interesse é só responder aqui!',
+    likesCount: 8,
+    createdAt: 'Há 3 horas',
+    initialComments: []
+  },
+  {
+    id: '4',
+    author: 'Beatriz Costa',
+    course: 'Engenharia de Materiais',
+    category: 'Geral',
+    title: 'Achados e Perdidos: Carteirinha de estudante encontrada no Bloco dos Laboratórios',
+    content: 'Encontrei uma carteirinha da UERJ perto do lab de informática de Campo Grande. Deixei na secretaria acadêmica.',
+    likesCount: 5,
+    createdAt: 'Há 4 horas',
+    initialComments: []
+  }
+];
+
 export function App() {
+  const [topics, setTopics] = useState<TopicProps[]>(INITIAL_TOPICS);
   const [currentView, setCurrentView] = useState<'feed' | 'profile' | 'disciplines'>('feed');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isRuModalOpen, setIsRuModalOpen] = useState(false);
 
+  // Função para injetar novo tópico no topo do Feed
+  const handleCreateTopic = (newTopicData: { title: string; category: string; content: string }) => {
+    const newTopic: TopicProps = {
+      id: Date.now().toString(),
+      author: 'Pedro Henrique Andrade',
+      course: 'Ciência da Computação (UERJ-ZO)',
+      category: newTopicData.category,
+      title: newTopicData.title,
+      content: newTopicData.content,
+      likesCount: 0,
+      createdAt: 'Agora mesmo',
+      initialComments: []
+    };
+
+    setTopics([newTopic, ...topics]);
+    setCurrentView('feed');
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans antialiased">
       
-      {/* Header com navegação */}
       <Header 
         onOpenNewTopic={() => setIsCreateModalOpen(true)}
         onOpenProfile={() => setCurrentView('profile')}
@@ -24,7 +98,6 @@ export function App() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        {/* Renderização Condicional */}
         {currentView === 'profile' && (
           <Profile onBackToFeed={() => setCurrentView('feed')} />
         )}
@@ -44,15 +117,12 @@ export function App() {
         {currentView === 'feed' && (
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             
-            {/* Coluna Principal: Feed */}
             <div className="lg:col-span-3 space-y-6">
-              <Feed />
+              <Feed topics={topics} />
             </div>
 
-            {/* Coluna Lateral: Acesso Rápido & Informes UERJ-ZO */}
             <aside className="space-y-6">
               
-              {/* Card Disciplinas & Avaliações */}
               <div 
                 onClick={() => setCurrentView('disciplines')}
                 className="bg-gradient-to-br from-uerj-blue to-uerj-blue-dark text-white rounded-2xl p-5 shadow-sm border border-blue-900/10 space-y-3 cursor-pointer hover:shadow-md hover:scale-[1.02] transition-all group select-none"
@@ -77,7 +147,6 @@ export function App() {
                 </div>
               </div>
 
-              {/* Card RU UERJ-ZO */}
               <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5 text-uerj-blue font-bold text-sm">
@@ -104,7 +173,6 @@ export function App() {
                 </button>
               </div>
 
-              {/* Card Avisos Rápidos UERJ-ZO */}
               <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 space-y-4">
                 <div className="flex items-center gap-2.5 text-amber-600 font-bold text-sm">
                   <AlertCircle className="h-4 w-4" />
@@ -129,10 +197,10 @@ export function App() {
 
       </main>
 
-      {/* Modais */}
       <CreateTopicModal 
         isOpen={isCreateModalOpen} 
-        onClose={() => setIsCreateModalOpen(false)} 
+        onClose={() => setIsCreateModalOpen(false)}
+        onCreateTopic={handleCreateTopic}
       />
 
       <RuMenuModal
