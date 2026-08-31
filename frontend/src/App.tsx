@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { Feed } from './components/Feed';
 import { Profile } from './components/Profile';
@@ -6,85 +6,75 @@ import { Disciplines } from './components/Disciplines';
 import { CreateTopicModal } from './components/CreateTopicModal';
 import { RuMenuModal } from './components/RuMenuModal';
 import type { TopicProps } from './components/TopicCard';
-import { Utensils, BookOpen, AlertCircle, Sparkles, MapPin } from 'lucide-react';
+import { api, CATEGORY_MAP, type TopicoResponse } from './services/api';
+import { Utensils, BookOpen, AlertCircle, Sparkles, MapPin, Loader2 } from 'lucide-react';
 
-const INITIAL_TOPICS: TopicProps[] = [
-  {
-    id: '1',
-    author: 'Lucas Silva',
-    course: 'Engenharia de Produção',
-    category: 'Estágios & Vagas',
-    title: 'Vaga de Estágio em Suporte e Infraestrutura na PGE-RJ',
-    content: 'Pessoal, abriram novas vagas de estágio para a área de TI na Procuradoria Geral do Estado! Alguém aqui da UERJ-ZO já fez a prova de seleção deles para dar umas dicas?',
-    likesCount: 12,
-    createdAt: 'Há 15 min',
-    initialComments: [
-      {
-        id: 'c1',
-        author: 'Pedro Henrique Andrade',
-        course: 'Ciência da Computação (FCEE)',
-        content: 'Fiz a prova no semestre passado! Cobram bastante sobre redes básicas, comandos de terminal e suporte ao usuário.',
-        createdAt: 'Há 5 min'
-      }
-    ]
-  },
-  {
-    id: '2',
-    author: 'Mariana Souza',
-    course: 'Ciências Biológicas (FCBS)',
-    category: 'Restaurante (RU)',
-    title: 'Cardápio do RU - Campus Campo Grande',
-    content: 'Alguém sabe dizer se a fila do RU tá muito grande agora pro almoço? E qual a opção vegana de hoje?',
-    likesCount: 24,
-    createdAt: 'Há 1 hora',
+function mapResponseToTopicProps(t: TopicoResponse): TopicProps {
+  return {
+    id: t.id.toString(),
+    author: t.nomeAutor,
+    course: 'Ciência da Computação (UERJ-ZO)',
+    category: t.nomeCategoria,
+    title: t.titulo,
+    content: t.conteudo,
+    likesCount: t.votos,
+    createdAt: new Date(t.dataCriacao).toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: 'short',
+      hour: '2-digit',
+      minute: '2-digit'
+    }),
     initialComments: []
-  },
-  {
-    id: '3',
-    author: 'Gabriel Lima',
-    course: 'Ciência da Computação (FCEE)',
-    category: 'Disciplinas',
-    title: 'Grupo de estudos para Algoritmos e Estrutura de Dados I',
-    content: 'Estamos montando um grupo de estudos no laboratório da UERJ-ZO para tirar dúvidas sobre ponteiros e alocação dinâmica. Quem tiver interesse é só responder aqui!',
-    likesCount: 8,
-    createdAt: 'Há 3 horas',
-    initialComments: []
-  },
-  {
-    id: '4',
-    author: 'Beatriz Costa',
-    course: 'Engenharia de Materiais',
-    category: 'Geral',
-    title: 'Achados e Perdidos: Carteirinha de estudante encontrada no Bloco dos Laboratórios',
-    content: 'Encontrei uma carteirinha da UERJ perto do lab de informática de Campo Grande. Deixei na secretaria acadêmica.',
-    likesCount: 5,
-    createdAt: 'Há 4 horas',
-    initialComments: []
-  }
-];
+  };
+}
 
 export function App() {
-  const [topics, setTopics] = useState<TopicProps[]>(INITIAL_TOPICS);
+  const [topics, setTopics] = useState<TopicProps[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [currentView, setCurrentView] = useState<'feed' | 'profile' | 'disciplines'>('feed');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isRuModalOpen, setIsRuModalOpen] = useState(false);
 
-  // Função para injetar novo tópico no topo do Feed
-  const handleCreateTopic = (newTopicData: { title: string; category: string; content: string }) => {
-    const newTopic: TopicProps = {
-      id: Date.now().toString(),
-      author: 'Pedro Henrique Andrade',
-      course: 'Ciência da Computação (UERJ-ZO)',
-      category: newTopicData.category,
-      title: newTopicData.title,
-      content: newTopicData.content,
-      likesCount: 0,
-      createdAt: 'Agora mesmo',
-      initialComments: []
-    };
+  // Carrega tópicos do Spring Boot
+  const carregarTopicos = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await api.getTopicos();
+      setTopics(data.map(mapResponseToTopicProps));
+    } catch (err) {
+      console.error(err);
+      setError('Não foi possível conectar ao servidor Spring Boot. Verifique se o backend está rodando.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    setTopics([newTopic, ...topics]);
-    setCurrentView('feed');
+  useEffect(() => {
+    carregarTopicos();
+  }, []);
+
+  // Envia novo tópico para o Spring Boot
+  const handleCreateTopic = async (newTopicData: { title: string; category: string; content: string }) => {
+    try {
+      const categoriaId = CATEGORY_MAP[newTopicData.category] || 1;
+      
+      const payload = {
+        titulo: newTopicData.title,
+        conteudo: newTopicData.content,
+        usuarioId: 1, // ID do usuário Pedro Henrique logado (definido no data.sql)
+        categoriaId: categoriaId
+      };
+
+      const topicoCriado = await api.criarTopico(payload);
+      setTopics(prev => [mapResponseToTopicProps(topicoCriado), ...prev]);
+      setCurrentView('feed');
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao publicar tópico no servidor!');
+    }
   };
 
   return (
@@ -118,7 +108,24 @@ export function App() {
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             
             <div className="lg:col-span-3 space-y-6">
-              <Feed topics={topics} />
+              {loading ? (
+                <div className="bg-white p-12 rounded-3xl border border-slate-100 flex flex-col items-center justify-center gap-3 text-slate-500">
+                  <Loader2 className="h-6 w-6 animate-spin text-uerj-blue" />
+                  <span className="text-xs font-semibold">Carregando tópicos da UERJ-ZO...</span>
+                </div>
+              ) : error ? (
+                <div className="bg-rose-50 border border-rose-200 p-6 rounded-3xl text-rose-800 space-y-3">
+                  <p className="text-xs font-bold">{error}</p>
+                  <button 
+                    onClick={carregarTopicos}
+                    className="text-xs bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-xl font-bold cursor-pointer transition-colors"
+                  >
+                    Tentar Novamente
+                  </button>
+                </div>
+              ) : (
+                <Feed topics={topics} />
+              )}
             </div>
 
             <aside className="space-y-6">
