@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class AutenticacaoService(
+class UsuarioService(
     private val usuarioRepository: UsuarioRepository
 ) {
 
@@ -27,7 +27,7 @@ class AutenticacaoService(
             nome = request.nome,
             email = request.email,
             matricula = request.matricula,
-            senhaHash = request.senha,
+            senhaHash = request.senha, // Mantendo compatível com a estrutura atual da entidade
             curso = request.curso
         )
 
