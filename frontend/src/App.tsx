@@ -7,13 +7,14 @@ import { CreateTopicModal } from './components/CreateTopicModal';
 import { RuMenuModal } from './components/RuMenuModal';
 import type { TopicProps } from './components/TopicCard';
 import { api, CATEGORY_MAP, type TopicoResponse } from './services/api';
+import { useAuth } from './context/AuthContext';
 import { Utensils, BookOpen, AlertCircle, Sparkles, MapPin, Loader2 } from 'lucide-react';
 
-function mapResponseToTopicProps(t: TopicoResponse): TopicProps {
+function mapResponseToTopicProps(t: TopicoResponse, cursoPadrao = 'UERJ'): TopicProps {
   return {
     id: t.id.toString(),
     author: t.nomeAutor,
-    course: 'Ciência da Computação (UERJ-ZO)',
+    course: cursoPadrao,
     category: t.nomeCategoria,
     title: t.titulo,
     content: t.conteudo,
@@ -29,6 +30,7 @@ function mapResponseToTopicProps(t: TopicoResponse): TopicProps {
 }
 
 export function App() {
+  const { usuario } = useAuth();
   const [topics, setTopics] = useState<TopicProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -43,7 +45,14 @@ export function App() {
       setLoading(true);
       setError(null);
       const data = await api.getTopicos();
-      setTopics(data.map(mapResponseToTopicProps));
+      setTopics(
+        data.map((t) =>
+          mapResponseToTopicProps(
+            t,
+            usuario && t.nomeAutor === usuario.nome ? usuario.curso : 'UERJ'
+          )
+        )
+      );
     } catch (err) {
       console.error(err);
       setError('Não foi possível conectar ao servidor Spring Boot. Verifique se o backend está rodando.');
@@ -54,22 +63,27 @@ export function App() {
 
   useEffect(() => {
     carregarTopicos();
-  }, []);
+  }, [usuario]);
 
-  // Envia novo tópico para o Spring Boot
+  // Envia novo tópico para o Spring Boot utilizando o usuário autenticado
   const handleCreateTopic = async (newTopicData: { title: string; category: string; content: string }) => {
+    if (!usuario) {
+      alert('Você precisa estar logado para publicar um tópico!');
+      return;
+    }
+
     try {
       const categoriaId = CATEGORY_MAP[newTopicData.category] || 1;
       
       const payload = {
         titulo: newTopicData.title,
         conteudo: newTopicData.content,
-        usuarioId: 1, // ID do usuário Pedro Henrique logado (definido no data.sql)
+        usuarioId: usuario.id,
         categoriaId: categoriaId
       };
 
       const topicoCriado = await api.criarTopico(payload);
-      setTopics(prev => [mapResponseToTopicProps(topicoCriado), ...prev]);
+      setTopics(prev => [mapResponseToTopicProps(topicoCriado, usuario.curso), ...prev]);
       setCurrentView('feed');
     } catch (err) {
       console.error(err);

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ThumbsUp, MessageSquare, Share2, Send, Loader2, Trash2 } from 'lucide-react';
 import { api, type ComentarioResponse } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 export interface TopicProps {
   id: string;
@@ -19,6 +20,8 @@ interface ExtendedTopicProps extends TopicProps {
 }
 
 export function TopicCard(props: ExtendedTopicProps | { topic: ExtendedTopicProps; onDeleteTopic?: (id: string) => void }) {
+  const { usuario } = useAuth();
+
   // Trata compatibilidade caso venha via `topic={...}` ou direto `{...topic}`
   const hasTopicProp = 'topic' in props && props.topic;
   const data: TopicProps = hasTopicProp ? props.topic : (props as TopicProps);
@@ -50,6 +53,9 @@ export function TopicCard(props: ExtendedTopicProps | { topic: ExtendedTopicProp
   const [newCommentText, setNewCommentText] = useState('');
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
   const [isDeletingTopic, setIsDeletingTopic] = useState(false);
+
+  // Verifica se o usuário atual é o autor do tópico
+  const isAuthor = Boolean(usuario && usuario.nome.trim().toLowerCase() === author.trim().toLowerCase());
 
   // Curtir / Descurtir
   const handleVote = async () => {
@@ -102,16 +108,21 @@ export function TopicCard(props: ExtendedTopicProps | { topic: ExtendedTopicProp
     }
   };
 
-  // Enviar comentário
+  // Enviar comentário com o id real do usuário autenticado
   const handleAddComment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newCommentText.trim() || isSubmittingComment) return;
+
+    if (!usuario) {
+      alert('Você precisa estar logado para comentar.');
+      return;
+    }
 
     try {
       setIsSubmittingComment(true);
       const novo = await api.criarComentario(Number(id), {
         conteudo: newCommentText.trim(),
-        usuarioId: 1
+        usuarioId: usuario.id
       });
       setComments(prev => [...prev, novo]);
       setNewCommentText('');
@@ -169,17 +180,19 @@ export function TopicCard(props: ExtendedTopicProps | { topic: ExtendedTopicProp
           </div>
         </div>
 
-        {/* Data e Botão de Deletar Tópico */}
+        {/* Data e Botão de Deletar Tópico (visível somente para o autor) */}
         <div className="flex items-center gap-2">
           <span className="text-xs text-slate-400">{createdAt}</span>
-          <button
-            onClick={handleDeleteTopic}
-            disabled={isDeletingTopic}
-            className="text-slate-400 hover:text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
-            title="Excluir tópico"
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
+          {isAuthor && (
+            <button
+              onClick={handleDeleteTopic}
+              disabled={isDeletingTopic}
+              className="text-slate-400 hover:text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
+              title="Excluir tópico"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -231,14 +244,15 @@ export function TopicCard(props: ExtendedTopicProps | { topic: ExtendedTopicProp
           <form onSubmit={handleAddComment} className="flex gap-2">
             <input
               type="text"
-              placeholder="Escreva uma resposta..."
+              placeholder={usuario ? "Escreva uma resposta..." : "Faça login para responder..."}
+              disabled={!usuario || isSubmittingComment}
               value={newCommentText}
               onChange={e => setNewCommentText(e.target.value)}
-              className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-slate-100 disabled:cursor-not-allowed"
             />
             <button
               type="submit"
-              disabled={isSubmittingComment || !newCommentText.trim()}
+              disabled={!usuario || isSubmittingComment || !newCommentText.trim()}
               className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1 cursor-pointer transition-colors"
             >
               {isSubmittingComment ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />}
@@ -254,28 +268,36 @@ export function TopicCard(props: ExtendedTopicProps | { topic: ExtendedTopicProp
             <p className="text-center text-xs text-slate-400 py-2">Seja o primeiro a responder este tópico!</p>
           ) : (
             <div className="space-y-2.5">
-              {comments.map(c => (
-                <div key={c.id} className="bg-slate-50 border border-slate-100 p-3 rounded-xl space-y-1">
-                  <div className="flex items-center justify-between text-[11px]">
-                    <span className="font-bold text-slate-700">
-                      {c.autorNome} <span className="text-slate-400 font-normal">({c.autorCurso})</span>
-                    </span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-slate-400">
-                        {new Date(c.dataCriacao).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+              {comments.map(c => {
+                const isCommentAuthor = Boolean(
+                  usuario && usuario.nome.trim().toLowerCase() === c.autorNome.trim().toLowerCase()
+                );
+
+                return (
+                  <div key={c.id} className="bg-slate-50 border border-slate-100 p-3 rounded-xl space-y-1">
+                    <div className="flex items-center justify-between text-[11px]">
+                      <span className="font-bold text-slate-700">
+                        {c.autorNome} <span className="text-slate-400 font-normal">({c.autorCurso})</span>
                       </span>
-                      <button
-                        onClick={() => handleDeleteComment(c.id)}
-                        className="text-slate-400 hover:text-red-500 p-1 rounded transition-colors cursor-pointer"
-                        title="Excluir resposta"
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <span className="text-slate-400">
+                          {new Date(c.dataCriacao).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                        {isCommentAuthor && (
+                          <button
+                            onClick={() => handleDeleteComment(c.id)}
+                            className="text-slate-400 hover:text-red-500 p-1 rounded transition-colors cursor-pointer"
+                            title="Excluir resposta"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </button>
+                        )}
+                      </div>
                     </div>
+                    <p className="text-xs text-slate-600 leading-relaxed">{c.conteudo}</p>
                   </div>
-                  <p className="text-xs text-slate-600 leading-relaxed">{c.conteudo}</p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

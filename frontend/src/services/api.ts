@@ -123,3 +123,55 @@ export const api = {
     }
   }
 };
+
+export interface Usuario {
+  id: number;
+  nome: string;
+  email: string;
+  matricula: string;
+  curso: string;
+}
+
+export interface CadastroData {
+  nome: string;
+  email: string;
+  matricula: string;
+  senha: string;
+  curso: string;
+}
+
+export interface LoginData {
+  email: string;
+  senha: string;
+}
+
+// Funções de Autenticação
+export async function cadastrarUsuario(dados: CadastroData): Promise<Usuario> {
+  const response = await fetch('http://localhost:8080/api/auth/cadastrar', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(dados),
+  });
+
+  if (!response.ok) {
+    const errorMsg = await response.text();
+    throw new Error(errorMsg || 'Erro ao realizar cadastro.');
+  }
+
+  return response.json();
+}
+
+export async function loginUsuario(dados: LoginData): Promise<Usuario> {
+  const response = await fetch('http://localhost:8080/api/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(dados),
+  });
+
+  if (!response.ok) {
+    const errorMsg = await response.text();
+    throw new Error(errorMsg || 'E-mail ou senha incorretos.');
+  }
+
+  return response.json();
+};

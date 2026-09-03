@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { X, Send, BookOpen, AlertCircle, Briefcase, HelpCircle, Coffee } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 interface CreateTopicModalProps {
   isOpen: boolean;
