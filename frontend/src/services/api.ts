@@ -32,6 +32,32 @@ export interface CriarComentarioPayload {
   usuarioId: number;
 }
 
+export interface AtualizarPerfilPayload {
+  nome: string;
+  curso: string;
+}
+
+export interface Usuario {
+  id: number;
+  nome: string;
+  email: string;
+  matricula: string;
+  curso: string;
+}
+
+export interface CadastroData {
+  nome: string;
+  email: string;
+  matricula: string;
+  senha: string;
+  curso: string;
+}
+
+export interface LoginData {
+  email: string;
+  senha: string;
+}
+
 export const CATEGORY_MAP: Record<string, number> = {
   'Geral': 1,
   'Estágios & Vagas': 2,
@@ -121,33 +147,29 @@ export const api = {
     if (!response.ok) {
       throw new Error(`Erro ao deletar comentário: ${response.statusText}`);
     }
+  },
+
+  // Atualizar dados cadastrais do perfil
+  async atualizarPerfil(id: number, payload: AtualizarPerfilPayload): Promise<Usuario> {
+    const response = await fetch(`${API_BASE_URL}/usuarios/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errorMsg = await response.text();
+      throw new Error(errorMsg || 'Erro ao atualizar perfil.');
+    }
+    return response.json();
   }
 };
 
-export interface Usuario {
-  id: number;
-  nome: string;
-  email: string;
-  matricula: string;
-  curso: string;
-}
-
-export interface CadastroData {
-  nome: string;
-  email: string;
-  matricula: string;
-  senha: string;
-  curso: string;
-}
-
-export interface LoginData {
-  email: string;
-  senha: string;
-}
-
 // Funções de Autenticação
 export async function cadastrarUsuario(dados: CadastroData): Promise<Usuario> {
-  const response = await fetch('http://localhost:8080/api/auth/cadastrar', {
+  const response = await fetch(`${API_BASE_URL}/auth/cadastrar`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(dados),
@@ -162,7 +184,7 @@ export async function cadastrarUsuario(dados: CadastroData): Promise<Usuario> {
 }
 
 export async function loginUsuario(dados: LoginData): Promise<Usuario> {
-  const response = await fetch('http://localhost:8080/api/auth/login', {
+  const response = await fetch(`${API_BASE_URL}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(dados),
@@ -174,4 +196,4 @@ export async function loginUsuario(dados: LoginData): Promise<Usuario> {
   }
 
   return response.json();
-};
+}

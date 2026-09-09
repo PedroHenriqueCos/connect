@@ -7,6 +7,7 @@ interface AuthContextType {
   carregando: boolean;
   login: (dados: LoginData) => Promise<void>;
   cadastrar: (dados: CadastroData) => Promise<void>;
+  atualizarDadosUsuario: (dados: Usuario) => void;
   logout: () => void;
 }
 
@@ -43,6 +44,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem(STORAGE_KEY, JSON.stringify(novoUsuario));
   };
 
+  const atualizarDadosUsuario = (dados: Usuario) => {
+    setUsuario(dados);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
+  };
+
   const logout = () => {
     setUsuario(null);
     localStorage.removeItem(STORAGE_KEY);
@@ -56,6 +62,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         carregando,
         login,
         cadastrar,
+        atualizarDadosUsuario,
         logout,
       }}
     >

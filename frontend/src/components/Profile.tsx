@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { TopicCard } from './TopicCard';
 import type { TopicProps } from './TopicCard';
+import { EditProfileModal } from './EditProfileModal';
 import mascoteModImg from '../assets/mascote_mod.png';
 import { useAuth } from '../context/AuthContext';
 import { api, type TopicoResponse } from '../services/api';
@@ -24,6 +25,7 @@ export function Profile({ onBackToFeed }: ProfileProps) {
   const [activeTab, setActiveTab] = useState<'topics' | 'replies' | 'saved'>('topics');
   const [meusTopicos, setMeusTopicos] = useState<TopicProps[]>([]);
   const [carregandoTopicos, setCarregandoTopicos] = useState(true);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const nomeExibicao = usuario?.nome || 'Aluno Convidado';
   const cursoExibicao = usuario?.curso || 'Graduação UERJ';
@@ -42,12 +44,10 @@ export function Profile({ onBackToFeed }: ProfileProps) {
         setCarregandoTopicos(true);
         const todosTopicos = await api.getTopicos();
 
-        // Filtra apenas os tópicos criados pelo aluno logado
         const filtrados = todosTopicos.filter(
           (t: TopicoResponse) => t.nomeAutor.trim().toLowerCase() === usuario.nome.trim().toLowerCase()
         );
 
-        // Converte para o padrão de propriedades do TopicCard
         const adaptados: TopicProps[] = filtrados.map((t: TopicoResponse) => ({
           id: String(t.id),
           author: t.nomeAutor,
@@ -88,7 +88,10 @@ export function Profile({ onBackToFeed }: ProfileProps) {
         {/* Banner Superior */}
         <div className="h-32 bg-gradient-to-r from-uerj-blue to-uerj-blue-dark relative">
           <div className="absolute right-4 top-4">
-            <button className="flex items-center gap-1.5 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white text-xs font-semibold px-3 py-1.5 rounded-xl transition-all cursor-pointer border border-white/20">
+            <button 
+              onClick={() => setIsEditModalOpen(true)}
+              className="flex items-center gap-1.5 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white text-xs font-semibold px-3 py-1.5 rounded-xl transition-all cursor-pointer border border-white/20 shadow-xs"
+            >
               <Edit2 className="h-3.5 w-3.5" />
               <span>Editar Perfil</span>
             </button>
@@ -106,7 +109,7 @@ export function Profile({ onBackToFeed }: ProfileProps) {
             
             <div className="flex items-center gap-2.5">
               
-              {/* Selo de Membro */}
+              {/* Selo de Aluno */}
               <div className="flex items-center gap-2 bg-uerj-blue text-white border border-blue-400/30 pl-2 pr-3 py-1 rounded-2xl shadow-sm">
                 <img 
                   src={mascoteModImg} 
@@ -230,6 +233,12 @@ export function Profile({ onBackToFeed }: ProfileProps) {
           </div>
         )}
       </div>
+
+      {/* Modal de Edição de Perfil */}
+      <EditProfileModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+      />
 
     </div>
   );
