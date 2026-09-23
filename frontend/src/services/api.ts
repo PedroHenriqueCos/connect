@@ -37,6 +37,36 @@ export interface AtualizarPerfilPayload {
   curso: string;
 }
 
+export interface RefeicaoData {
+  mainDish: string;
+  veganOption: string;
+  garnish: string;
+  sideDishes: string;
+  salad: string;
+  dessert: string;
+}
+
+export interface DayMenuData {
+  id: number;
+  day: string;
+  order: number;
+  lunch: RefeicaoData;
+  dinner: RefeicaoData;
+  lastUpdatedBy: string;
+  lastUpdatedAt: string;
+  confirmations: number;
+  queueStatus: 'Rápida (< 5 min)' | 'Moderada (~15 min)' | 'Longa (> 25 min)' | string;
+}
+
+export interface AtualizarRefeicaoPayload {
+  mealType: 'lunch' | 'dinner';
+  mainDish: string;
+  veganOption: string;
+  garnish: string;
+  dessert: string;
+  updatedBy: string;
+}
+
 export interface Usuario {
   id: number;
   nome: string;
@@ -164,7 +194,42 @@ export const api = {
       throw new Error(errorMsg || 'Erro ao atualizar perfil.');
     }
     return response.json();
-  }
+  },
+
+  // Obter o cardápio da semana (RU)
+  async getCardapioSemana(): Promise<DayMenuData[]> {
+    const res = await fetch(`${API_BASE_URL}/ru/semana`);
+    if (!res.ok) {
+      throw new Error('Falha ao carregar o cardápio da semana');
+    }
+    return res.json();
+  },
+
+  // Confirmar veracidade do cardápio de um dia
+  async confirmarCardapio(id: number): Promise<DayMenuData> {
+    const res = await fetch(`${API_BASE_URL}/ru/${id}/confirmar`, {
+      method: 'PATCH',
+    });
+    if (!res.ok) {
+      throw new Error('Falha ao confirmar cardápio');
+    }
+    return res.json();
+  },
+
+  // Atualizar refeição do RU (Moderação)
+  async atualizarRefeicao(id: number, payload: AtualizarRefeicaoPayload): Promise<DayMenuData> {
+    const res = await fetch(`${API_BASE_URL}/ru/${id}/refeicao`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      throw new Error('Falha ao salvar alterações da refeição');
+    }
+    return res.json();
+  },
 };
 
 // Funções de Autenticação
