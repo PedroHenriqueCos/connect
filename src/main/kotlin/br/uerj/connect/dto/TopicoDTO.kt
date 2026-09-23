@@ -27,5 +27,6 @@ data class TopicoResponse(
     val dataCriacao: LocalDateTime,
     val votos: Int,
     val nomeAutor: String,
-    val nomeCategoria: String
+    val nomeCategoria: String,
+    val autorId: Long
 )

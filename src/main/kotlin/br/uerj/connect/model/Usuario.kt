@@ -22,5 +22,8 @@ data class Usuario(
     val senhaHash: String,
 
     @Column(nullable = false)
-    val curso: String
+    val curso: String,
+
+    @Column(nullable = false)
+    val role: String = "ALUNO"
 )

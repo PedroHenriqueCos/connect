@@ -21,5 +21,6 @@ data class UsuarioResponse(
     val nome: String,
     val email: String,
     val matricula: String,
-    val curso: String
+    val curso: String,
+    val role: String
 )

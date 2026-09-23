@@ -13,6 +13,7 @@ export interface TopicProps {
   likesCount?: number;
   createdAt: string;
   initialComments?: any[];
+  authorId?: number;
 }
 
 interface ExtendedTopicProps extends TopicProps {
@@ -35,7 +36,8 @@ export function TopicCard(props: ExtendedTopicProps | { topic: ExtendedTopicProp
     title = '',
     content = '',
     likesCount = 0,
-    createdAt = ''
+    createdAt = '',
+    authorId
   } = data || {};
 
   // Votação
@@ -54,8 +56,15 @@ export function TopicCard(props: ExtendedTopicProps | { topic: ExtendedTopicProp
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
   const [isDeletingTopic, setIsDeletingTopic] = useState(false);
 
-  // Verifica se o usuário atual é o autor do tópico
-  const isAuthor = Boolean(usuario && usuario.nome.trim().toLowerCase() === author.trim().toLowerCase());
+  // Verificações de permissão
+  const isAuthor = Boolean(
+    usuario && (
+      (authorId && usuario.id === authorId) ||
+      usuario.nome.trim().toLowerCase() === author.trim().toLowerCase()
+    )
+  );
+  const isModerator = Boolean(usuario && (usuario.role === 'MODERADOR' || usuario.role === 'ADMIN'));
+  const canDeleteTopic = isAuthor || isModerator;
 
   // Curtir / Descurtir
   const handleVote = async () => {
@@ -114,7 +123,7 @@ export function TopicCard(props: ExtendedTopicProps | { topic: ExtendedTopicProp
     if (!newCommentText.trim() || isSubmittingComment) return;
 
     if (!usuario) {
-      alert('Você precisa estar logado para comentar.');
+      alert('Você precisa estar logado para responder.');
       return;
     }
 
@@ -134,13 +143,22 @@ export function TopicCard(props: ExtendedTopicProps | { topic: ExtendedTopicProp
     }
   };
 
-  // Excluir tópico
+  // Excluir tópico (Autor ou Moderador)
   const handleDeleteTopic = async () => {
-    if (!window.confirm('Tem certeza de que deseja apagar este tópico?')) return;
+    if (!usuario) {
+      alert('Você precisa estar logado para apagar um tópico.');
+      return;
+    }
+
+    const mensagemConfirmacao = isModerator && !isAuthor
+      ? 'Ação de Moderação: Tem certeza de que deseja apagar este tópico?'
+      : 'Tem certeza de que deseja apagar o seu tópico?';
+
+    if (!window.confirm(mensagemConfirmacao)) return;
 
     try {
       setIsDeletingTopic(true);
-      await api.deletarTopico(Number(id));
+      await api.deletarTopico(Number(id), usuario.id);
       if (onDeleteTopic) {
         onDeleteTopic(id);
       } else {
@@ -180,15 +198,15 @@ export function TopicCard(props: ExtendedTopicProps | { topic: ExtendedTopicProp
           </div>
         </div>
 
-        {/* Data e Botão de Deletar Tópico (visível somente para o autor) */}
+        {/* Data e Botão de Deletar Tópico (visível para Autor ou Moderadores) */}
         <div className="flex items-center gap-2">
           <span className="text-xs text-slate-400">{createdAt}</span>
-          {isAuthor && (
+          {canDeleteTopic && (
             <button
               onClick={handleDeleteTopic}
               disabled={isDeletingTopic}
               className="text-slate-400 hover:text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
-              title="Excluir tópico"
+              title={isModerator && !isAuthor ? 'Moderação: Excluir tópico' : 'Excluir seu tópico'}
             >
               <Trash2 className="h-4 w-4" />
             </button>

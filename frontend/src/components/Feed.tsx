@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { TopicCard } from './TopicCard';
 import type { TopicProps } from './TopicCard';
+import { useAuth } from '../context/AuthContext';
 
 const CATEGORIES = [
   'Em Alta',
@@ -12,9 +13,11 @@ const CATEGORIES = [
 
 interface FeedProps {
   topics: TopicProps[];
+  onDeleteTopic?: (id: string) => void;
 }
 
-export function Feed({ topics }: FeedProps) {
+export function Feed({ topics, onDeleteTopic }: FeedProps) {
+  const { usuario } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState('Em Alta');
 
   const filteredTopics = selectedCategory === 'Em Alta'
@@ -48,7 +51,11 @@ export function Feed({ topics }: FeedProps) {
       <div className="space-y-4">
         {filteredTopics.length > 0 ? (
           filteredTopics.map((topic) => (
-            <TopicCard key={topic.id} {...topic} />
+            <TopicCard 
+              key={topic.id} 
+              {...topic} 
+              onDeleteTopic={onDeleteTopic}
+            />
           ))
         ) : (
           <div className="bg-white p-8 rounded-2xl border border-slate-100 text-center space-y-2">

@@ -4,7 +4,6 @@ import br.uerj.connect.dto.CriarTopicoRequest
 import br.uerj.connect.dto.TopicoResponse
 import br.uerj.connect.model.Topico
 import br.uerj.connect.repository.CategoriaRepository
-import br.uerj.connect.repository.ComentarioRepository
 import br.uerj.connect.repository.TopicoRepository
 import br.uerj.connect.repository.UsuarioRepository
 import org.springframework.stereotype.Service
@@ -14,8 +13,7 @@ import org.springframework.transaction.annotation.Transactional
 class TopicoService(
     private val topicoRepository: TopicoRepository,
     private val usuarioRepository: UsuarioRepository,
-    private val categoriaRepository: CategoriaRepository,
-    private val comentarioRepository: ComentarioRepository
+    private val categoriaRepository: CategoriaRepository
 ) {
 
     fun listarTodos(): List<TopicoResponse> {
@@ -50,15 +48,24 @@ class TopicoService(
     }
 
     @Transactional
-    fun deletarTopico(id: Long) {
-        if (!topicoRepository.existsById(id)) {
-            throw RuntimeException("Tópico não encontrado com ID: $id")
+    fun deletarTopico(id: Long, solicitanteId: Long) {
+        val topico = topicoRepository.findById(id).orElseThrow {
+            IllegalArgumentException("Tópico não encontrado com ID: $id")
         }
-        // Deleta os comentários vinculados antes de apagar o tópico
-        comentarioRepository.findByTopicoIdOrderByDataCriacaoAsc(id).forEach {
-            comentarioRepository.delete(it)
+
+        val solicitante = usuarioRepository.findById(solicitanteId).orElseThrow {
+            IllegalArgumentException("Usuário solicitante não encontrado com ID: $solicitanteId")
         }
-        topicoRepository.deleteById(id)
+
+        // Verifica se o solicitante é o autor do post OU se é Moderador/Admin
+        val isAutor = topico.autor.id == solicitante.id
+        val isModerador = solicitante.role == "MODERADOR" || solicitante.role == "ADMIN"
+
+        if (!isAutor && !isModerador) {
+            throw IllegalStateException("Apenas o autor da postagem ou um moderador podem excluir este tópico.")
+        }
+
+        topicoRepository.delete(topico)
     }
 
     private fun toResponse(topico: Topico) = TopicoResponse(
@@ -68,6 +75,7 @@ class TopicoService(
         dataCriacao = topico.dataCriacao,
         votos = topico.votos,
         nomeAutor = topico.autor.nome,
-        nomeCategoria = topico.categoria.nome
+        nomeCategoria = topico.categoria.nome,
+        autorId = topico.autor.id
     )
 }

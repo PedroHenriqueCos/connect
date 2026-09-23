@@ -14,6 +14,7 @@ function mapResponseToTopicProps(t: TopicoResponse, cursoPadrao = 'UERJ'): Topic
   return {
     id: t.id.toString(),
     author: t.nomeAutor,
+    authorId: t.autorId,
     course: cursoPadrao,
     category: t.nomeCategoria,
     title: t.titulo,
@@ -64,6 +65,11 @@ export function App() {
   useEffect(() => {
     carregarTopicos();
   }, [usuario]);
+
+  // Remove o tópico do estado sem precisar recarregar a página inteira
+  const handleDeleteTopicFromState = (id: string) => {
+    setTopics(prev => prev.filter(topic => topic.id !== id));
+  };
 
   // Envia novo tópico para o Spring Boot utilizando o usuário autenticado
   const handleCreateTopic = async (newTopicData: { title: string; category: string; content: string }) => {
@@ -138,7 +144,7 @@ export function App() {
                   </button>
                 </div>
               ) : (
-                <Feed topics={topics} />
+                <Feed topics={topics} onDeleteTopic={handleDeleteTopicFromState} />
               )}
             </div>
 
@@ -227,7 +233,6 @@ export function App() {
       <RuMenuModal
         isOpen={isRuModalOpen}
         onClose={() => setIsRuModalOpen(false)}
-        userRole="moderator"
       />
 
     </div>

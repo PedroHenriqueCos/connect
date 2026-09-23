@@ -23,7 +23,7 @@ interface RuMenuModalProps {
   userRole?: 'student' | 'moderator' | 'admin';
 }
 
-export function RuMenuModal({ isOpen, onClose, userRole = 'moderator' }: RuMenuModalProps) {
+export function RuMenuModal({ isOpen, onClose, userRole }: RuMenuModalProps) {
   const { usuario } = useAuth();
   const [menuList, setMenuList] = useState<DayMenuData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -71,7 +71,9 @@ export function RuMenuModal({ isOpen, onClose, userRole = 'moderator' }: RuMenuM
   const activeMeal = currentDay 
     ? (selectedMealType === 'lunch' ? currentDay.lunch : currentDay.dinner) 
     : null;
-  const isModerator = userRole === 'moderator' || userRole === 'admin';
+
+  // Moderação concedida se a role do usuário no backend for MODERADOR ou ADMIN, ou passada via prop
+  const isModerator = usuario?.role === 'MODERADOR' || usuario?.role === 'ADMIN' || userRole === 'moderator' || userRole === 'admin';
   const hasConfirmedCurrentDay = currentDay ? confirmedDays.includes(currentDay.id) : false;
 
   const handleConfirmMenu = async () => {

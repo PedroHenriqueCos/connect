@@ -27,6 +27,8 @@ export function Profile({ onBackToFeed }: ProfileProps) {
   const [carregandoTopicos, setCarregandoTopicos] = useState(true);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
+  const isModerador = Boolean(usuario && (usuario.role === 'MODERADOR' || usuario.role === 'ADMIN'));
+
   const nomeExibicao = usuario?.nome || 'Aluno Convidado';
   const cursoExibicao = usuario?.curso || 'Graduação UERJ';
   const matriculaExibicao = usuario?.matricula || 'Não informada';
@@ -51,6 +53,7 @@ export function Profile({ onBackToFeed }: ProfileProps) {
         const adaptados: TopicProps[] = filtrados.map((t: TopicoResponse) => ({
           id: String(t.id),
           author: t.nomeAutor,
+          authorId: t.autorId,
           course: usuario.curso,
           category: t.nomeCategoria,
           title: t.titulo,
@@ -109,15 +112,17 @@ export function Profile({ onBackToFeed }: ProfileProps) {
             
             <div className="flex items-center gap-2.5">
               
-              {/* Selo de Aluno */}
-              <div className="flex items-center gap-2 bg-uerj-blue text-white border border-blue-400/30 pl-2 pr-3 py-1 rounded-2xl shadow-sm">
+              {/* Selo de Perfil (Moderador ou Aluno Conectado) */}
+              <div className={`flex items-center gap-2 text-white border pl-2 pr-3 py-1 rounded-2xl shadow-sm ${
+                isModerador ? 'bg-uerj-blue border-uerj-yellow/40' : 'bg-uerj-blue border-blue-400/30'
+              }`}>
                 <img 
                   src={mascoteModImg} 
                   alt="Mascote UERJ" 
                   className="w-5 h-5 object-contain scale-125"
                 />
                 <span className="text-xs font-bold tracking-tight">
-                  Aluno Conectado
+                  {isModerador ? 'Moderador' : 'Aluno Conectado'}
                 </span>
               </div>
 

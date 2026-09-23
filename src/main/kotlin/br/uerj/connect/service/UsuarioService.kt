@@ -1,5 +1,6 @@
 package br.uerj.connect.service
 
+import br.uerj.connect.dto.AtualizarUsuarioRequest
 import br.uerj.connect.dto.CadastroUsuarioRequest
 import br.uerj.connect.dto.LoginRequest
 import br.uerj.connect.dto.UsuarioResponse
@@ -23,12 +24,16 @@ class UsuarioService(
             throw IllegalArgumentException("Já existe um usuário cadastrado com esta matrícula.")
         }
 
+        // O primeiro usuário cadastrado no banco se torna MODERADOR automaticamente; os demais entram como ALUNO
+        val roleAtribuida = if (usuarioRepository.count() == 0L) "MODERADOR" else "ALUNO"
+
         val novoUsuario = Usuario(
             nome = request.nome,
             email = request.email,
             matricula = request.matricula,
-            senhaHash = request.senha, // Mantendo compatível com a estrutura atual da entidade
-            curso = request.curso
+            senhaHash = request.senha,
+            curso = request.curso,
+            role = roleAtribuida
         )
 
         val salvo = usuarioRepository.save(novoUsuario)
@@ -52,11 +57,46 @@ class UsuarioService(
         return toResponse(usuario)
     }
 
+    @Transactional
+    fun atualizarPerfil(id: Long, request: AtualizarUsuarioRequest): UsuarioResponse {
+        val usuario = usuarioRepository.findById(id).orElseThrow {
+            IllegalArgumentException("Usuário não encontrado com o ID: $id")
+        }
+
+        val usuarioAtualizado = usuario.copy(
+            nome = request.nome.trim(),
+            curso = request.curso.trim()
+        )
+
+        val salvo = usuarioRepository.save(usuarioAtualizado)
+        return toResponse(salvo)
+    }
+
+    @Transactional
+    fun concederModerador(moderadorId: Long, alvoId: Long): UsuarioResponse {
+        val moderador = usuarioRepository.findById(moderadorId).orElseThrow {
+            IllegalArgumentException("Moderador solicitante não encontrado.")
+        }
+
+        if (moderador.role != "MODERADOR" && moderador.role != "ADMIN") {
+            throw IllegalStateException("Apenas moderadores podem conceder permissão de moderação.")
+        }
+
+        val alvo = usuarioRepository.findById(alvoId).orElseThrow {
+            IllegalArgumentException("Usuário alvo não encontrado.")
+        }
+
+        val alvoAtualizado = alvo.copy(role = "MODERADOR")
+        val salvo = usuarioRepository.save(alvoAtualizado)
+        return toResponse(salvo)
+    }
+
     private fun toResponse(usuario: Usuario) = UsuarioResponse(
         id = usuario.id,
         nome = usuario.nome,
         email = usuario.email,
         matricula = usuario.matricula,
-        curso = usuario.curso
+        curso = usuario.curso,
+        role = usuario.role
     )
 }

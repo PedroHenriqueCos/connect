@@ -37,8 +37,11 @@ class TopicoController(
     }
 
     @DeleteMapping("/{id}")
-    fun deletarTopico(@PathVariable id: Long): ResponseEntity<Void> {
-        topicoService.deletarTopico(id)
+    fun deletarTopico(
+        @PathVariable id: Long,
+        @RequestParam solicitanteId: Long
+    ): ResponseEntity<Void> {
+        topicoService.deletarTopico(id, solicitanteId)
         return ResponseEntity.noContent().build()
     }
 }

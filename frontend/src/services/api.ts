@@ -8,6 +8,7 @@ export interface TopicoResponse {
   votos: number;
   nomeAutor: string;
   nomeCategoria: string;
+  autorId: number;
 }
 
 export interface CriarTopicoPayload {
@@ -73,6 +74,7 @@ export interface Usuario {
   email: string;
   matricula: string;
   curso: string;
+  role?: string;
 }
 
 export interface CadastroData {
@@ -159,13 +161,14 @@ export const api = {
     return response.json();
   },
 
-  // Deletar um tópico
-  async deletarTopico(id: number): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/topicos/${id}`, {
+  // Deletar um tópico com validação do usuário solicitante
+  async deletarTopico(id: number, solicitanteId: number): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/topicos/${id}?solicitanteId=${solicitanteId}`, {
       method: 'DELETE',
     });
     if (!response.ok) {
-      throw new Error(`Erro ao deletar tópico: ${response.statusText}`);
+      const err = await response.text();
+      throw new Error(err || `Erro ao deletar tópico: ${response.statusText}`);
     }
   },
 
@@ -194,6 +197,18 @@ export const api = {
       throw new Error(errorMsg || 'Erro ao atualizar perfil.');
     }
     return response.json();
+  },
+
+  // Promover aluno a Moderador (Requer ID de quem solicita)
+  async promoverParaModerador(alvoId: number, solicitanteId: number): Promise<Usuario> {
+    const res = await fetch(`${API_BASE_URL}/usuarios/${alvoId}/promover?solicitanteId=${solicitanteId}`, {
+      method: 'PATCH',
+    });
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(err || 'Falha ao conceder permissão de moderador');
+    }
+    return res.json();
   },
 
   // Obter o cardápio da semana (RU)

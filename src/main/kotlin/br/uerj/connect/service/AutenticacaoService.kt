@@ -23,12 +23,16 @@ class AutenticacaoService(
             throw IllegalArgumentException("Já existe um usuário cadastrado com esta matrícula.")
         }
 
+        // Primeiro usuário cadastrado se torna MODERADOR; os demais entram como ALUNO
+        val roleAtribuida = if (usuarioRepository.count() == 0L) "MODERADOR" else "ALUNO"
+
         val novoUsuario = Usuario(
             nome = request.nome,
             email = request.email,
             matricula = request.matricula,
             senhaHash = request.senha,
-            curso = request.curso
+            curso = request.curso,
+            role = roleAtribuida
         )
 
         val salvo = usuarioRepository.save(novoUsuario)
@@ -46,17 +50,12 @@ class AutenticacaoService(
         return toResponse(usuario)
     }
 
-    fun buscarPorId(id: Long): UsuarioResponse {
-        val usuario = usuarioRepository.findById(id)
-            .orElseThrow { IllegalArgumentException("Usuário não encontrado com ID: $id") }
-        return toResponse(usuario)
-    }
-
     private fun toResponse(usuario: Usuario) = UsuarioResponse(
         id = usuario.id,
         nome = usuario.nome,
         email = usuario.email,
         matricula = usuario.matricula,
-        curso = usuario.curso
+        curso = usuario.curso,
+        role = usuario.role
     )
 }
