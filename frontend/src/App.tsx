@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { Feed } from './components/Feed';
 import { Profile } from './components/Profile';
-import { Disciplines } from './components/Disciplines';
+import { GuiaDisciplinas } from './components/GuiaDisciplinas';
 import { CreateTopicModal } from './components/CreateTopicModal';
 import { RuMenuModal } from './components/RuMenuModal';
 import type { TopicProps } from './components/TopicCard';
@@ -113,15 +113,7 @@ export function App() {
         )}
 
         {currentView === 'disciplines' && (
-          <div className="space-y-6">
-            <button
-              onClick={() => setCurrentView('feed')}
-              className="inline-flex items-center gap-2 text-xs font-semibold text-uerj-blue hover:text-uerj-blue-dark bg-white px-3.5 py-2 rounded-xl shadow-sm border border-slate-100 transition-colors cursor-pointer"
-            >
-              ← Voltar ao Feed Principal
-            </button>
-            <Disciplines />
-          </div>
+          <GuiaDisciplinas onBackToFeed={() => setCurrentView('feed')} />
         )}
 
         {currentView === 'feed' && (
