@@ -29,7 +29,7 @@ class FileUploadController(
     }
 
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun fazerUpload(@RequestParam("file") file: MultipartFile): ResponseEntity> {
+    fun fazerUpload(@RequestParam("file") file: MultipartFile): ResponseEntity<*> {
         if (file.isEmpty) {
             return ResponseEntity.badRequest().body(mapOf("error" to "Arquivo vazio."))
         }
