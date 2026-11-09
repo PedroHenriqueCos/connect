@@ -1,8 +1,14 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
-  --color-uerj-blue: #1b4873;
-  --color-uerj-blue-dark: #133454;
-  --color-uerj-yellow: #f5c10a;
-  --color-uerj-yellow-hover: #d9aa08;
+  --color-uerj-blue: #004B87;
+  --color-uerj-blue-dark: #003366;
+  --color-uerj-yellow: #FFB800;
+
+  --color-dark-base: #121212;
+  --color-dark-surface: #1E1E1E;
+  --color-dark-card: #242424;
+  --color-dark-border: #2F2F2F;
 }

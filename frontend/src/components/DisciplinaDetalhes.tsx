@@ -11,7 +11,8 @@ import {
   Calendar,
   User,
   Upload,
-  CheckCircle2
+  CheckCircle2,
+  X
 } from 'lucide-react';
 import { type Disciplina } from '../data/disciplinasData';
 import { materialService, type MaterialDisciplina } from '../services/materialService';
@@ -132,11 +133,11 @@ export function DisciplinaDetalhes({ disciplina, onBack, currentUser = { id: 1, 
   const getIconeTipo = (t: string) => {
     switch (t) {
       case 'IMAGEM':
-        return <ImageIcon className="h-4 w-4 text-emerald-600" />;
+        return <ImageIcon className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />;
       case 'DOCUMENTO':
-        return <FileText className="h-4 w-4 text-amber-600" />;
+        return <FileText className="h-4 w-4 text-amber-600 dark:text-amber-400" />;
       default:
-        return <LinkIcon className="h-4 w-4 text-uerj-blue" />;
+        return <LinkIcon className="h-4 w-4 text-uerj-blue dark:text-yellow-400" />;
     }
   };
 
@@ -145,35 +146,35 @@ export function DisciplinaDetalhes({ disciplina, onBack, currentUser = { id: 1, 
       {/* Botão Voltar */}
       <button
         onClick={onBack}
-        className="inline-flex items-center gap-2 text-xs font-semibold text-uerj-blue hover:text-uerj-blue-dark bg-white px-3.5 py-2 rounded-xl shadow-sm border border-slate-100 transition-colors cursor-pointer"
+        className="inline-flex items-center gap-2 text-xs font-semibold text-uerj-blue hover:text-uerj-blue-dark dark:text-yellow-400 dark:hover:text-yellow-300 bg-white dark:bg-[#1E1E1E] px-3.5 py-2 rounded-xl shadow-sm border border-slate-100 dark:border-[#2F2F2F] transition-colors cursor-pointer"
       >
         <ArrowLeft className="h-4 w-4" />
         Voltar ao Guia de Disciplinas
       </button>
 
       {/* Cartão de Destaque da Disciplina */}
-      <div className="bg-gradient-to-r from-uerj-blue to-uerj-blue-dark rounded-3xl p-6 sm:p-8 text-white shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-gradient-to-r from-uerj-blue to-uerj-blue-dark dark:from-[#18181b] dark:to-[#121212] rounded-3xl p-6 sm:p-8 text-white shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-transparent dark:border-[#27272a] transition-colors">
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <span className="px-2.5 py-0.5 rounded-md bg-white/20 backdrop-blur-md text-xs font-mono font-bold text-white">
+            <span className="px-2.5 py-0.5 rounded-md bg-white/20 dark:bg-zinc-800 backdrop-blur-md text-xs font-mono font-bold text-white dark:text-zinc-200">
               {disciplina.codigo}
             </span>
-            <span className="px-2.5 py-0.5 rounded-md bg-uerj-yellow/20 text-uerj-yellow text-xs font-bold">
+            <span className="px-2.5 py-0.5 rounded-md bg-uerj-yellow/20 text-uerj-yellow dark:bg-yellow-400/10 dark:text-yellow-400 text-xs font-bold">
               {disciplina.periodo}º Período
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black tracking-tight flex items-center gap-2.5">
-            <BookOpen className="h-7 w-7 text-uerj-yellow shrink-0" />
+            <BookOpen className="h-7 w-7 text-uerj-yellow dark:text-yellow-400 shrink-0" />
             {disciplina.nome}
           </h1>
-          <p className="text-blue-100 text-xs sm:text-sm mt-2 max-w-xl">
+          <p className="text-blue-100 dark:text-zinc-400 text-xs sm:text-sm mt-2 max-w-xl">
             Espaço colaborativo para partilha de apontamentos, resumos, provas antigas e hiperligações para esta cadeira.
           </p>
         </div>
 
         <button
           onClick={() => setShowModal(true)}
-          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-uerj-yellow hover:bg-yellow-400 text-slate-900 font-bold text-xs transition-colors shadow-sm shrink-0 cursor-pointer"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-uerj-yellow hover:bg-yellow-400 dark:bg-yellow-400 dark:hover:bg-yellow-300 text-slate-900 dark:text-zinc-950 font-bold text-xs transition-colors shadow-sm shrink-0 cursor-pointer"
         >
           <Plus className="h-4 w-4" />
           Partilhar Material
@@ -182,52 +183,61 @@ export function DisciplinaDetalhes({ disciplina, onBack, currentUser = { id: 1, 
 
       {/* Modal de Publicação */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
-          <div className="bg-white rounded-3xl shadow-xl border border-slate-100 w-full max-w-md p-6 space-y-4">
-            <h2 className="text-lg font-bold text-slate-900">Adicionar Material à Matéria</h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/75 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-[#1E1E1E] rounded-3xl shadow-xl border border-slate-100 dark:border-[#2F2F2F] w-full max-w-md p-6 space-y-4 my-8 transition-colors">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold text-slate-900 dark:text-zinc-100">Adicionar Material à Matéria</h2>
+              <button
+                type="button"
+                onClick={() => setShowModal(false)}
+                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
 
             <form onSubmit={handleSubmit} className="space-y-3">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Título do Conteúdo</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-zinc-200 mb-1">Título do Conteúdo</label>
                 <input
                   type="text"
                   required
                   placeholder="Ex: Resumo de Ponteiros e Structs"
                   value={titulo}
                   onChange={e => setTitulo(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-uerj-blue"
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-zinc-700 bg-slate-50 dark:bg-[#242424] text-xs text-slate-800 dark:text-zinc-100 placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:outline-none focus:border-uerj-blue dark:focus:border-yellow-400 transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Tipo de Material</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-zinc-200 mb-1">Tipo de Material</label>
                 <select
                   value={tipo}
                   onChange={e => handleTipoChange(e.target.value as any)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-uerj-blue"
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-zinc-700 bg-slate-50 dark:bg-[#242424] text-xs text-slate-800 dark:text-zinc-100 focus:outline-none focus:border-uerj-blue dark:focus:border-yellow-400 cursor-pointer transition-all"
                 >
-                  <option value="LINK">Link / Google Drive</option>
-                  <option value="IMAGEM">Foto / Imagem do PC</option>
-                  <option value="DOCUMENTO">PDF / Documento do PC</option>
+                  <option value="LINK" className="bg-white dark:bg-[#242424]">Link / Google Drive</option>
+                  <option value="IMAGEM" className="bg-white dark:bg-[#242424]">Foto / Imagem do PC</option>
+                  <option value="DOCUMENTO" className="bg-white dark:bg-[#242424]">PDF / Documento do PC</option>
                 </select>
               </div>
 
               {/* Campo dinâmico: Link manual ou Seleção de ficheiro local */}
               {tipo === 'LINK' ? (
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Hiperligação / URL</label>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-zinc-200 mb-1">Hiperligação / URL</label>
                   <input
                     type="url"
                     required
                     placeholder="https://drive.google.com/... ou https://..."
                     value={url}
                     onChange={e => setUrl(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-uerj-blue"
+                    className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-zinc-700 bg-slate-50 dark:bg-[#242424] text-xs text-slate-800 dark:text-zinc-100 placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:outline-none focus:border-uerj-blue dark:focus:border-yellow-400 transition-all"
                   />
                 </div>
               ) : (
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-zinc-200 mb-1">
                     Selecionar ficheiro do computador ({tipo === 'IMAGEM' ? 'PNG, JPG, WEBP' : 'PDF, DOCX, TXT'})
                   </label>
                   <input
@@ -241,18 +251,18 @@ export function DisciplinaDetalhes({ disciplina, onBack, currentUser = { id: 1, 
                   />
                   <label
                     htmlFor="file-upload-input"
-                    className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-slate-200 rounded-xl hover:border-uerj-blue bg-slate-50 hover:bg-blue-50/40 cursor-pointer transition-colors"
+                    className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-slate-200 dark:border-zinc-700 rounded-xl hover:border-uerj-blue dark:hover:border-yellow-400 bg-slate-50 dark:bg-[#242424] hover:bg-blue-50/40 dark:hover:bg-zinc-800/60 cursor-pointer transition-colors"
                   >
                     {ficheiroSelecionado ? (
-                      <div className="flex items-center gap-2 text-xs font-semibold text-emerald-700">
-                        <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+                      <div className="flex items-center gap-2 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+                        <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                         <span className="truncate max-w-[260px]">{ficheiroSelecionado.name}</span>
                       </div>
                     ) : (
-                      <div className="flex flex-col items-center gap-1.5 text-xs text-slate-500">
-                        <Upload className="h-5 w-5 text-uerj-blue" />
-                        <span className="font-semibold text-slate-700">Clique para escolher o ficheiro</span>
-                        <span className="text-[10px] text-slate-400">Até 20MB</span>
+                      <div className="flex flex-col items-center gap-1.5 text-xs text-slate-500 dark:text-zinc-400">
+                        <Upload className="h-5 w-5 text-uerj-blue dark:text-yellow-400" />
+                        <span className="font-semibold text-slate-700 dark:text-zinc-200">Clique para escolher o ficheiro</span>
+                        <span className="text-[10px] text-slate-400 dark:text-zinc-500">Até 20MB</span>
                       </div>
                     )}
                   </label>
@@ -260,28 +270,28 @@ export function DisciplinaDetalhes({ disciplina, onBack, currentUser = { id: 1, 
               )}
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Descrição Breve (opcional)</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-zinc-200 mb-1">Descrição Breve (opcional)</label>
                 <textarea
                   rows={2}
                   placeholder="Adicione orientações sobre este ficheiro..."
                   value={descricao}
                   onChange={e => setDescricao(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-uerj-blue resize-none"
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-zinc-700 bg-slate-50 dark:bg-[#242424] text-xs text-slate-800 dark:text-zinc-100 placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:outline-none focus:border-uerj-blue dark:focus:border-yellow-400 resize-none transition-all"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-2">
+              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-[#2F2F2F]">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl cursor-pointer"
+                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 dark:text-zinc-400 dark:hover:bg-zinc-800 rounded-xl cursor-pointer transition-colors"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-4 py-2 text-xs font-bold bg-uerj-blue text-white rounded-xl hover:bg-uerj-blue-dark transition-colors disabled:opacity-50 cursor-pointer"
+                  className="px-4 py-2 text-xs font-bold bg-uerj-blue hover:bg-uerj-blue-dark dark:bg-yellow-400 dark:hover:bg-yellow-300 text-white dark:text-zinc-950 rounded-xl transition-colors disabled:opacity-50 cursor-pointer"
                 >
                   {submitting ? 'A enviar...' : 'Publicar'}
                 </button>
@@ -293,10 +303,10 @@ export function DisciplinaDetalhes({ disciplina, onBack, currentUser = { id: 1, 
 
       {/* Lista de Materiais */}
       <div className="space-y-3">
-        <h2 className="text-sm font-bold text-slate-800">Materiais Partilhados pelos Estudantes</h2>
+        <h2 className="text-sm font-bold text-slate-800 dark:text-zinc-100">Materiais Partilhados pelos Estudantes</h2>
 
         {loading ? (
-          <div className="bg-white p-8 rounded-2xl border border-slate-100 text-center text-xs text-slate-500">
+          <div className="bg-white dark:bg-[#1E1E1E] p-8 rounded-2xl border border-slate-100 dark:border-[#2F2F2F] text-center text-xs text-slate-500 dark:text-zinc-400">
             A carregar materiais...
           </div>
         ) : materiais.length > 0 ? (
@@ -304,11 +314,11 @@ export function DisciplinaDetalhes({ disciplina, onBack, currentUser = { id: 1, 
             {materiais.map(mat => (
               <div 
                 key={mat.id}
-                className="bg-white p-4 rounded-2xl border-2 border-uerj-blue/20 hover:border-uerj-blue shadow-xs transition-all flex flex-col justify-between"
+                className="bg-white dark:bg-[#1E1E1E] p-4 rounded-2xl border-2 border-uerj-blue/20 dark:border-zinc-700 hover:border-uerj-blue dark:hover:border-yellow-400 shadow-xs transition-all flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-2">
-                    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-slate-100 text-[11px] font-semibold text-slate-700">
+                    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-slate-100 dark:bg-[#242424] text-[11px] font-semibold text-slate-700 dark:text-zinc-200 border border-transparent dark:border-zinc-700">
                       {getIconeTipo(mat.tipo)}
                       {mat.tipo}
                     </span>
@@ -317,21 +327,21 @@ export function DisciplinaDetalhes({ disciplina, onBack, currentUser = { id: 1, 
                       <button
                         onClick={() => handleExcluir(mat.id)}
                         title="Eliminar material"
-                        className="p-1 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                        className="p-1 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:text-zinc-500 dark:hover:text-red-400 dark:hover:bg-red-950/40 rounded-lg transition-colors cursor-pointer"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
                     )}
                   </div>
 
-                  <h3 className="text-xs font-bold text-slate-900 mb-1">{mat.titulo}</h3>
+                  <h3 className="text-xs font-bold text-slate-900 dark:text-zinc-100 mb-1">{mat.titulo}</h3>
                   {mat.descricao && (
-                    <p className="text-[11px] text-slate-600 mb-3 leading-relaxed">{mat.descricao}</p>
+                    <p className="text-[11px] text-slate-600 dark:text-zinc-400 mb-3 leading-relaxed">{mat.descricao}</p>
                   )}
                 </div>
 
-                <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px]">
-                  <div className="flex items-center gap-2 text-slate-400">
+                <div className="pt-3 border-t border-slate-100 dark:border-[#2F2F2F] flex items-center justify-between text-[11px]">
+                  <div className="flex items-center gap-2 text-slate-400 dark:text-zinc-500">
                     <span className="flex items-center gap-1"><User className="h-3 w-3" /> {mat.nomeAutor}</span>
                     <span>•</span>
                     <span className="flex items-center gap-1"><Calendar className="h-3 w-3" /> {new Date(mat.dataCriacao).toLocaleDateString('pt-PT')}</span>
@@ -341,7 +351,7 @@ export function DisciplinaDetalhes({ disciplina, onBack, currentUser = { id: 1, 
                     href={mat.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-1 font-bold text-uerj-blue hover:text-uerj-blue-dark transition-colors"
+                    className="inline-flex items-center gap-1 font-bold text-uerj-blue hover:text-uerj-blue-dark dark:text-yellow-400 dark:hover:text-yellow-300 transition-colors"
                   >
                     {mat.tipo === 'LINK' ? 'Abrir' : 'Ver Ficheiro'}
                     <ExternalLink className="h-3 w-3" />
@@ -351,7 +361,7 @@ export function DisciplinaDetalhes({ disciplina, onBack, currentUser = { id: 1, 
             ))}
           </div>
         ) : (
-          <div className="bg-white p-8 rounded-2xl border border-slate-100 text-center text-xs text-slate-500">
+          <div className="bg-white dark:bg-[#1E1E1E] p-8 rounded-2xl border border-slate-100 dark:border-[#2F2F2F] text-center text-xs text-slate-500 dark:text-zinc-400">
             Ainda não há materiais partilhados para esta cadeira. Seja o primeiro a partilhar!
           </div>
         )}

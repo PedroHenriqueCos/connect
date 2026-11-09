@@ -55,18 +55,18 @@ export function EditProfileModal({ isOpen, onClose }: EditProfileModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-100 overflow-hidden my-8">
+    <div className="fixed inset-0 z-50 bg-slate-900/60 dark:bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200">
+      <div className="bg-white dark:bg-[#1E1E1E] w-full max-w-md rounded-3xl shadow-2xl border border-slate-100 dark:border-[#2F2F2F] overflow-hidden my-8 transition-colors">
         
         {/* Topo do Modal */}
-        <div className="bg-uerj-blue p-6 text-white flex items-center justify-between">
+        <div className="bg-uerj-blue dark:bg-[#18181b] p-6 text-white flex items-center justify-between border-b border-transparent dark:border-[#27272a]">
           <div className="flex items-center gap-2">
             <User className="h-5 w-5 text-uerj-yellow" />
             <h2 className="text-base font-bold">Editar Perfil • Connect UERJ</h2>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 transition-colors cursor-pointer"
+            className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 dark:bg-zinc-800 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
           >
             <X className="h-5 w-5" />
           </button>
@@ -75,37 +75,37 @@ export function EditProfileModal({ isOpen, onClose }: EditProfileModalProps) {
         {/* Formulário */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {erro && (
-            <div className="bg-rose-50 border border-rose-200 text-rose-700 text-xs p-3 rounded-xl">
+            <div className="bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 text-rose-700 dark:text-rose-300 text-xs p-3 rounded-xl">
               {erro}
             </div>
           )}
 
           {/* Nome */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1.5">
+            <label className="block text-xs font-bold text-slate-700 dark:text-zinc-200 mb-1.5">
               Nome Completo:
             </label>
             <input
               type="text"
               value={nome}
               onChange={(e) => setNome(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-uerj-blue text-slate-800"
+              className="w-full bg-slate-50 dark:bg-[#242424] border border-slate-200 dark:border-zinc-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-zinc-100 placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-uerj-blue dark:focus:ring-yellow-400 transition-all"
               required
             />
           </div>
 
           {/* Curso */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1.5 flex items-center gap-1">
-              <BookOpen className="h-3.5 w-3.5 text-uerj-blue" /> Curso:
+            <label className="block text-xs font-bold text-slate-700 dark:text-zinc-200 mb-1.5 flex items-center gap-1">
+              <BookOpen className="h-3.5 w-3.5 text-uerj-blue dark:text-yellow-400" /> Curso:
             </label>
             <select
               value={curso}
               onChange={(e) => setCurso(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-uerj-blue text-slate-800 cursor-pointer"
+              className="w-full bg-slate-50 dark:bg-[#242424] border border-slate-200 dark:border-zinc-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-uerj-blue dark:focus:ring-yellow-400 cursor-pointer transition-all"
             >
               {CURSOS_UERJ.map((c) => (
-                <option key={c} value={c}>
+                <option key={c} value={c} className="bg-white dark:bg-[#242424] text-slate-900 dark:text-zinc-100">
                   {c}
                 </option>
               ))}
@@ -113,25 +113,25 @@ export function EditProfileModal({ isOpen, onClose }: EditProfileModalProps) {
           </div>
 
           {/* Matrícula e E-mail (somente leitura para integridade) */}
-          <div className="bg-slate-50 border border-slate-100 p-3.5 rounded-2xl space-y-1.5 text-xs text-slate-500">
-            <p className="font-semibold text-slate-700">Dados Institucionais (Não alteráveis):</p>
+          <div className="bg-slate-50 dark:bg-[#242424] border border-slate-100 dark:border-zinc-700/60 p-3.5 rounded-2xl space-y-1.5 text-xs text-slate-500 dark:text-zinc-400">
+            <p className="font-semibold text-slate-700 dark:text-zinc-200">Dados Institucionais (Não alteráveis):</p>
             <p><strong>E-mail:</strong> {usuario.email}</p>
             <p><strong>Matrícula:</strong> {usuario.matricula}</p>
           </div>
 
           {/* Botões */}
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-[#2F2F2F]">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:bg-slate-100 transition-colors cursor-pointer"
+              className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:bg-slate-100 dark:text-zinc-400 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-bold bg-uerj-blue hover:bg-uerj-blue-dark text-white transition-colors shadow-sm cursor-pointer disabled:opacity-50"
+              className="flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-bold bg-uerj-blue hover:bg-uerj-blue-dark dark:bg-yellow-400 dark:hover:bg-yellow-300 dark:text-zinc-950 text-white transition-colors shadow-sm cursor-pointer disabled:opacity-50"
             >
               {loading ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />

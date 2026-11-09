@@ -185,27 +185,27 @@ export function TopicCard(props: ExtendedTopicProps | { topic: ExtendedTopicProp
   };
 
   return (
-    <article className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:border-slate-200 transition-all space-y-4">
+   <article className="bg-white dark:bg-[#1E1E1E] rounded-2xl p-6 shadow-sm border-2 border-uerj-blue/30 hover:border-uerj-blue dark:border-uerj-blue/40 dark:hover:border-uerj-blue transition-all space-y-4">
       {/* Cabeçalho */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-slate-700">
+          <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-[#27272a] border border-slate-200 dark:border-zinc-700 flex items-center justify-center font-bold text-slate-700 dark:text-zinc-200">
             {author ? author.charAt(0).toUpperCase() : 'U'}
           </div>
           <div>
-            <h4 className="font-bold text-slate-800 text-sm">{author}</h4>
-            <p className="text-slate-400 text-xs">{course}</p>
+            <h4 className="font-bold text-slate-800 dark:text-zinc-100 text-sm">{author}</h4>
+            <p className="text-slate-400 dark:text-zinc-400 text-xs">{course}</p>
           </div>
         </div>
 
-        {/* Data e Botão de Deletar Tópico (visível para Autor ou Moderadores) */}
+        {/* Data e Botão de Deletar Tópico */}
         <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-400">{createdAt}</span>
+          <span className="text-xs text-slate-400 dark:text-zinc-500">{createdAt}</span>
           {canDeleteTopic && (
             <button
               onClick={handleDeleteTopic}
               disabled={isDeletingTopic}
-              className="text-slate-400 hover:text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
+              className="text-slate-400 dark:text-zinc-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 p-1.5 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
               title={isModerator && !isAuthor ? 'Moderação: Excluir tópico' : 'Excluir seu tópico'}
             >
               <Trash2 className="h-4 w-4" />
@@ -216,41 +216,45 @@ export function TopicCard(props: ExtendedTopicProps | { topic: ExtendedTopicProp
 
       {/* Categoria */}
       <div>
-        <span className="inline-block bg-amber-50 text-amber-700 text-[11px] font-semibold px-2.5 py-1 rounded-full border border-amber-200/60">
+        <span className="inline-block bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 text-[11px] font-semibold px-2.5 py-1 rounded-full border border-amber-200/60 dark:border-amber-500/20">
           {category}
         </span>
       </div>
 
       {/* Conteúdo */}
       <div className="space-y-1.5">
-        <h3 className="font-bold text-slate-900 text-base leading-snug">{title}</h3>
-        <p className="text-slate-600 text-xs leading-relaxed">{content}</p>
+        <h3 className="font-bold text-slate-900 dark:text-zinc-100 text-base leading-snug">{title}</h3>
+        <p className="text-slate-600 dark:text-zinc-300 text-xs leading-relaxed">{content}</p>
       </div>
 
       {/* Ações */}
-      <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-xs text-slate-500">
+      <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-[#2F2F2F] text-xs text-slate-500 dark:text-zinc-400">
         <button
           onClick={handleVote}
           disabled={isVoting}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
-            hasVoted ? 'bg-blue-50 text-blue-600 font-bold' : 'hover:bg-slate-50 text-slate-600'
+            hasVoted
+              ? 'bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 font-bold'
+              : 'hover:bg-slate-50 dark:hover:bg-[#27272a] text-slate-600 dark:text-zinc-300'
           }`}
         >
-          <ThumbsUp className={`h-4 w-4 ${hasVoted ? 'fill-blue-600 text-blue-600' : ''}`} />
+          <ThumbsUp className={`h-4 w-4 ${hasVoted ? 'fill-blue-600 text-blue-600 dark:fill-blue-400 dark:text-blue-400' : ''}`} />
           <span>{likes} {likes === 1 ? 'curtida' : 'curtidas'}</span>
         </button>
 
         <button
           onClick={toggleComments}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-colors cursor-pointer ${
-            showComments ? 'bg-slate-100 font-bold text-slate-800' : 'hover:bg-slate-50 text-slate-600'
+            showComments
+              ? 'bg-slate-100 dark:bg-[#27272a] font-bold text-slate-800 dark:text-zinc-100'
+              : 'hover:bg-slate-50 dark:hover:bg-[#27272a] text-slate-600 dark:text-zinc-300'
           }`}
         >
           <MessageSquare className="h-4 w-4" />
           <span>{comments.length > 0 ? `${comments.length} respostas` : 'Comentários'}</span>
         </button>
 
-        <button className="flex items-center gap-1.5 hover:bg-slate-50 px-3 py-1.5 rounded-xl transition-colors cursor-pointer">
+        <button className="flex items-center gap-1.5 hover:bg-slate-50 dark:hover:bg-[#27272a] px-3 py-1.5 rounded-xl transition-colors cursor-pointer text-slate-600 dark:text-zinc-300">
           <Share2 className="h-4 w-4" />
           <span>Compartilhar</span>
         </button>
@@ -258,7 +262,7 @@ export function TopicCard(props: ExtendedTopicProps | { topic: ExtendedTopicProp
 
       {/* Gaveta de Comentários */}
       {showComments && (
-        <div className="pt-4 mt-2 border-t border-slate-100 space-y-4">
+        <div className="pt-4 mt-2 border-t border-slate-100 dark:border-[#2F2F2F] space-y-4">
           <form onSubmit={handleAddComment} className="flex gap-2">
             <input
               type="text"
@@ -266,7 +270,7 @@ export function TopicCard(props: ExtendedTopicProps | { topic: ExtendedTopicProp
               disabled={!usuario || isSubmittingComment}
               value={newCommentText}
               onChange={e => setNewCommentText(e.target.value)}
-              className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-slate-100 disabled:cursor-not-allowed"
+              className="flex-1 bg-slate-50 dark:bg-[#242424] border border-slate-200 dark:border-zinc-700 rounded-xl px-3.5 py-2 text-xs text-slate-800 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-slate-100 dark:disabled:bg-zinc-800 disabled:cursor-not-allowed placeholder:text-slate-400 dark:placeholder:text-zinc-500"
             />
             <button
               type="submit"
@@ -279,11 +283,11 @@ export function TopicCard(props: ExtendedTopicProps | { topic: ExtendedTopicProp
           </form>
 
           {loadingComments ? (
-            <div className="flex justify-center py-3 text-slate-400">
-              <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
+            <div className="flex justify-center py-3 text-slate-400 dark:text-zinc-500">
+              <Loader2 className="h-4 w-4 animate-spin text-blue-600 dark:text-blue-400" />
             </div>
           ) : comments.length === 0 ? (
-            <p className="text-center text-xs text-slate-400 py-2">Seja o primeiro a responder este tópico!</p>
+            <p className="text-center text-xs text-slate-400 dark:text-zinc-500 py-2">Seja o primeiro a responder este tópico!</p>
           ) : (
             <div className="space-y-2.5">
               {comments.map(c => {
@@ -292,19 +296,19 @@ export function TopicCard(props: ExtendedTopicProps | { topic: ExtendedTopicProp
                 );
 
                 return (
-                  <div key={c.id} className="bg-slate-50 border border-slate-100 p-3 rounded-xl space-y-1">
+                  <div key={c.id} className="bg-slate-50 dark:bg-[#242424] border border-slate-100 dark:border-zinc-700/60 p-3 rounded-xl space-y-1">
                     <div className="flex items-center justify-between text-[11px]">
-                      <span className="font-bold text-slate-700">
-                        {c.autorNome} <span className="text-slate-400 font-normal">({c.autorCurso})</span>
+                      <span className="font-bold text-slate-700 dark:text-zinc-200">
+                        {c.autorNome} <span className="text-slate-400 dark:text-zinc-500 font-normal">({c.autorCurso})</span>
                       </span>
                       <div className="flex items-center gap-2">
-                        <span className="text-slate-400">
+                        <span className="text-slate-400 dark:text-zinc-500">
                           {new Date(c.dataCriacao).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                         </span>
                         {isCommentAuthor && (
                           <button
                             onClick={() => handleDeleteComment(c.id)}
-                            className="text-slate-400 hover:text-red-500 p-1 rounded transition-colors cursor-pointer"
+                            className="text-slate-400 dark:text-zinc-500 hover:text-red-500 dark:hover:text-red-400 p-1 rounded transition-colors cursor-pointer"
                             title="Excluir resposta"
                           >
                             <Trash2 className="h-3 w-3" />
@@ -312,7 +316,7 @@ export function TopicCard(props: ExtendedTopicProps | { topic: ExtendedTopicProp
                         )}
                       </div>
                     </div>
-                    <p className="text-xs text-slate-600 leading-relaxed">{c.conteudo}</p>
+                    <p className="text-xs text-slate-600 dark:text-zinc-300 leading-relaxed">{c.conteudo}</p>
                   </div>
                 );
               })}

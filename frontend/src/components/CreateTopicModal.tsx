@@ -40,15 +40,15 @@ export function CreateTopicModal({ isOpen, onClose, onCreateTopic }: CreateTopic
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-100 overflow-hidden my-8">
+    <div className="fixed inset-0 z-50 bg-slate-900/60 dark:bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200">
+      <div className="bg-white dark:bg-[#1E1E1E] w-full max-w-lg rounded-3xl shadow-2xl border border-slate-100 dark:border-[#2F2F2F] overflow-hidden my-8 transition-colors">
         
         {/* Topo */}
-        <div className="bg-uerj-blue p-6 text-white flex items-center justify-between">
+        <div className="bg-uerj-blue dark:bg-[#18181b] p-6 text-white flex items-center justify-between border-b border-transparent dark:border-[#27272a]">
           <h2 className="text-base font-bold">Criar Novo Tópico • UERJ-ZO</h2>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 transition-colors cursor-pointer"
+            className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 dark:bg-zinc-800 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
           >
             <X className="h-5 w-5" />
           </button>
@@ -57,7 +57,7 @@ export function CreateTopicModal({ isOpen, onClose, onCreateTopic }: CreateTopic
         {/* Formulário */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1.5">
+            <label className="block text-xs font-bold text-slate-700 dark:text-zinc-200 mb-1.5">
               Título do Tópico:
             </label>
             <input
@@ -65,13 +65,13 @@ export function CreateTopicModal({ isOpen, onClose, onCreateTopic }: CreateTopic
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Ex: Grupo de estudos para Redes I ou Vaga de TI"
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-uerj-blue transition-all"
+              className="w-full bg-slate-50 dark:bg-[#242424] border border-slate-200 dark:border-zinc-700 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-zinc-100 placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-uerj-blue dark:focus:ring-yellow-400 transition-all"
               required
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1.5">
+            <label className="block text-xs font-bold text-slate-700 dark:text-zinc-200 mb-1.5">
               Categoria:
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -82,8 +82,8 @@ export function CreateTopicModal({ isOpen, onClose, onCreateTopic }: CreateTopic
                   onClick={() => setCategory(cat.label)}
                   className={`flex items-center gap-2 p-2.5 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
                     category === cat.label
-                      ? 'bg-blue-50 border-uerj-blue text-uerj-blue shadow-xs'
-                      : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                      ? 'bg-blue-50 border-uerj-blue text-uerj-blue dark:bg-yellow-400/10 dark:border-yellow-400 dark:text-yellow-400 shadow-xs'
+                      : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50 dark:bg-[#242424] dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-[#2a2a2a]'
                   }`}
                 >
                   <cat.icon className="h-4 w-4" />
@@ -94,7 +94,7 @@ export function CreateTopicModal({ isOpen, onClose, onCreateTopic }: CreateTopic
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1.5">
+            <label className="block text-xs font-bold text-slate-700 dark:text-zinc-200 mb-1.5">
               Mensagem / Descrição:
             </label>
             <textarea
@@ -102,16 +102,16 @@ export function CreateTopicModal({ isOpen, onClose, onCreateTopic }: CreateTopic
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Descreva sua dúvida, oportunidade de estágio ou comunicado para a comunidade da UERJ-ZO..."
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs focus:outline-none focus:ring-2 focus:ring-uerj-blue transition-all resize-none"
+              className="w-full bg-slate-50 dark:bg-[#242424] border border-slate-200 dark:border-zinc-700 rounded-xl p-3 text-xs text-slate-900 dark:text-zinc-100 placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-uerj-blue dark:focus:ring-yellow-400 transition-all resize-none"
               required
             />
           </div>
 
-          <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+          <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-[#2F2F2F]">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:bg-slate-100 transition-colors cursor-pointer"
+              className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:bg-slate-100 dark:text-zinc-400 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
             >
               Cancelar
             </button>

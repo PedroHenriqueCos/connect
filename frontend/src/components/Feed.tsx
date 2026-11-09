@@ -37,8 +37,8 @@ export function Feed({ topics, onDeleteTopic }: FeedProps) {
               onClick={() => setSelectedCategory(category)}
               className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                 isSelected
-                  ? 'bg-uerj-blue text-white shadow-sm scale-105'
-                  : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-100'
+                  ? 'bg-uerj-blue text-white shadow-sm scale-105 dark:bg-yellow-400 dark:text-zinc-950 dark:shadow-yellow-400/10'
+                  : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-100 dark:bg-[#1E1E1E] dark:text-zinc-300 dark:hover:bg-[#27272a] dark:border-[#2F2F2F]'
               }`}
             >
               {category}
@@ -58,9 +58,9 @@ export function Feed({ topics, onDeleteTopic }: FeedProps) {
             />
           ))
         ) : (
-          <div className="bg-white p-8 rounded-2xl border border-slate-100 text-center space-y-2">
-            <p className="text-sm font-semibold text-slate-700">Nenhum tópico encontrado nesta categoria</p>
-            <p className="text-xs text-slate-400">Seja o primeiro a publicar clicando em "+ Novo Tópico"!</p>
+          <div className="bg-white dark:bg-[#1E1E1E] p-8 rounded-2xl border border-slate-100 dark:border-[#2F2F2F] text-center space-y-2">
+            <p className="text-sm font-semibold text-slate-700 dark:text-zinc-200">Nenhum tópico encontrado nesta categoria</p>
+            <p className="text-xs text-slate-400 dark:text-zinc-500">Seja o primeiro a publicar clicando em "+ Novo Tópico"!</p>
           </div>
         )}
       </div>

@@ -80,20 +80,20 @@ export function Profile({ onBackToFeed }: ProfileProps) {
       {/* Botão de Retorno */}
       <button
         onClick={onBackToFeed}
-        className="inline-flex items-center gap-2 text-xs font-semibold text-uerj-blue hover:text-uerj-blue-dark bg-white px-3.5 py-2 rounded-xl shadow-sm border border-slate-100 transition-colors cursor-pointer"
+        className="inline-flex items-center gap-2 text-xs font-semibold text-uerj-blue hover:text-uerj-blue-dark dark:text-yellow-400 dark:hover:text-yellow-300 bg-white dark:bg-[#1E1E1E] px-3.5 py-2 rounded-xl shadow-sm border border-slate-100 dark:border-[#2F2F2F] transition-colors cursor-pointer"
       >
         ← Voltar ao Feed Principal
       </button>
 
       {/* Cartão de Perfil Principal */}
-      <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+      <div className="bg-white dark:bg-[#1E1E1E] rounded-3xl shadow-sm border border-slate-100 dark:border-[#2F2F2F] overflow-hidden transition-colors">
         
         {/* Banner Superior */}
-        <div className="h-32 bg-gradient-to-r from-uerj-blue to-uerj-blue-dark relative">
+        <div className="h-32 bg-gradient-to-r from-uerj-blue to-uerj-blue-dark dark:from-[#18181b] dark:to-[#121212] relative border-b border-transparent dark:border-[#27272a]">
           <div className="absolute right-4 top-4">
             <button 
               onClick={() => setIsEditModalOpen(true)}
-              className="flex items-center gap-1.5 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white text-xs font-semibold px-3 py-1.5 rounded-xl transition-all cursor-pointer border border-white/20 shadow-xs"
+              className="flex items-center gap-1.5 bg-white/20 hover:bg-white/30 dark:bg-zinc-800/80 dark:hover:bg-zinc-700 backdrop-blur-md text-white text-xs font-semibold px-3 py-1.5 rounded-xl transition-all cursor-pointer border border-white/20 dark:border-zinc-700 shadow-xs"
             >
               <Edit2 className="h-3.5 w-3.5" />
               <span>Editar Perfil</span>
@@ -106,7 +106,7 @@ export function Profile({ onBackToFeed }: ProfileProps) {
           
           {/* Avatar & Badges */}
           <div className="-mt-14 mb-4 flex items-end justify-between">
-            <div className="w-24 h-24 rounded-2xl bg-uerj-blue text-white text-3xl font-black flex items-center justify-center border-4 border-white shadow-md uppercase">
+            <div className="w-24 h-24 rounded-2xl bg-uerj-blue dark:bg-zinc-800 text-white dark:text-yellow-400 text-3xl font-black flex items-center justify-center border-4 border-white dark:border-[#1E1E1E] shadow-md uppercase">
               {primeiraLetra}
             </div>
             
@@ -114,7 +114,9 @@ export function Profile({ onBackToFeed }: ProfileProps) {
               
               {/* Selo de Perfil (Moderador ou Aluno Conectado) */}
               <div className={`flex items-center gap-2 text-white border pl-2 pr-3 py-1 rounded-2xl shadow-sm ${
-                isModerador ? 'bg-uerj-blue border-uerj-yellow/40' : 'bg-uerj-blue border-blue-400/30'
+                isModerador 
+                  ? 'bg-uerj-blue border-uerj-yellow/40 dark:bg-zinc-800 dark:border-yellow-400/50 dark:text-yellow-400' 
+                  : 'bg-uerj-blue border-blue-400/30 dark:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-200'
               }`}>
                 <img 
                   src={mascoteModImg} 
@@ -127,7 +129,7 @@ export function Profile({ onBackToFeed }: ProfileProps) {
               </div>
 
               {/* Badge de Reconhecimento */}
-              <span className="flex items-center gap-1.5 text-xs font-bold text-amber-900 bg-amber-50 border border-amber-200 px-3 py-1 rounded-2xl shadow-xs">
+              <span className="flex items-center gap-1.5 text-xs font-bold text-amber-900 bg-amber-50 border border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20 px-3 py-1 rounded-2xl shadow-xs">
                 <Heart className="h-3.5 w-3.5 text-rose-500 fill-rose-500" />
                 <span>0 Curtidas</span>
               </span>
@@ -137,28 +139,28 @@ export function Profile({ onBackToFeed }: ProfileProps) {
 
           <div className="space-y-2">
             <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
-              <h2 className="text-xl font-bold text-slate-900">{nomeExibicao}</h2>
-              <span className="text-xs text-slate-500 font-medium flex items-center gap-1">
-                <BookOpen className="h-3.5 w-3.5 text-uerj-blue" />
+              <h2 className="text-xl font-bold text-slate-900 dark:text-zinc-100">{nomeExibicao}</h2>
+              <span className="text-xs text-slate-500 dark:text-zinc-400 font-medium flex items-center gap-1">
+                <BookOpen className="h-3.5 w-3.5 text-uerj-blue dark:text-yellow-400" />
                 {cursoExibicao} • UERJ
               </span>
             </div>
 
-            <p className="text-xs text-slate-600 max-w-2xl leading-relaxed">
+            <p className="text-xs text-slate-600 dark:text-zinc-300 max-w-2xl leading-relaxed">
               Perfil acadêmico de {nomeExibicao}, estudante de {cursoExibicao} conectado na plataforma Connect UERJ.
             </p>
 
-            <div className="flex flex-wrap items-center gap-4 pt-2 text-xs text-slate-500 border-t border-slate-100">
+            <div className="flex flex-wrap items-center gap-4 pt-2 text-xs text-slate-500 dark:text-zinc-400 border-t border-slate-100 dark:border-[#2F2F2F]">
               <span className="flex items-center gap-1.5">
-                <BookOpen className="h-3.5 w-3.5 text-slate-400" />
+                <BookOpen className="h-3.5 w-3.5 text-slate-400 dark:text-zinc-500" />
                 Matrícula: {matriculaExibicao}
               </span>
               <span className="flex items-center gap-1.5">
-                <MapPin className="h-3.5 w-3.5 text-slate-400" />
+                <MapPin className="h-3.5 w-3.5 text-slate-400 dark:text-zinc-500" />
                 UERJ
               </span>
               <span className="flex items-center gap-1.5">
-                <Calendar className="h-3.5 w-3.5 text-slate-400" />
+                <Calendar className="h-3.5 w-3.5 text-slate-400 dark:text-zinc-500" />
                 Conectado ao Connect UERJ
               </span>
             </div>
@@ -169,13 +171,13 @@ export function Profile({ onBackToFeed }: ProfileProps) {
       </div>
 
       {/* Abas de Navegação */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
+      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-[#2F2F2F] pb-2">
         <button
           onClick={() => setActiveTab('topics')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
             activeTab === 'topics'
-              ? 'bg-uerj-blue text-white shadow-sm'
-              : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-100'
+              ? 'bg-uerj-blue text-white shadow-sm dark:bg-yellow-400 dark:text-zinc-950'
+              : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-100 dark:bg-[#1E1E1E] dark:text-zinc-300 dark:hover:bg-[#27272a] dark:border-[#2F2F2F]'
           }`}
         >
           <BookOpen className="h-4 w-4" />
@@ -186,8 +188,8 @@ export function Profile({ onBackToFeed }: ProfileProps) {
           onClick={() => setActiveTab('replies')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
             activeTab === 'replies'
-              ? 'bg-uerj-blue text-white shadow-sm'
-              : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-100'
+              ? 'bg-uerj-blue text-white shadow-sm dark:bg-yellow-400 dark:text-zinc-950'
+              : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-100 dark:bg-[#1E1E1E] dark:text-zinc-300 dark:hover:bg-[#27272a] dark:border-[#2F2F2F]'
           }`}
         >
           <MessageSquare className="h-4 w-4" />
@@ -198,8 +200,8 @@ export function Profile({ onBackToFeed }: ProfileProps) {
           onClick={() => setActiveTab('saved')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
             activeTab === 'saved'
-              ? 'bg-uerj-blue text-white shadow-sm'
-              : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-100'
+              ? 'bg-uerj-blue text-white shadow-sm dark:bg-yellow-400 dark:text-zinc-950'
+              : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-100 dark:bg-[#1E1E1E] dark:text-zinc-300 dark:hover:bg-[#27272a] dark:border-[#2F2F2F]'
           }`}
         >
           <Bookmark className="h-4 w-4" />
@@ -211,8 +213,8 @@ export function Profile({ onBackToFeed }: ProfileProps) {
       <div className="space-y-4">
         {activeTab === 'topics' && (
           carregandoTopicos ? (
-            <div className="flex items-center justify-center p-8 bg-white rounded-2xl border border-slate-100 text-slate-500 gap-2 text-xs">
-              <Loader2 className="h-4 w-4 animate-spin text-uerj-blue" />
+            <div className="flex items-center justify-center p-8 bg-white dark:bg-[#1E1E1E] rounded-2xl border border-slate-100 dark:border-[#2F2F2F] text-slate-500 dark:text-zinc-400 gap-2 text-xs">
+              <Loader2 className="h-4 w-4 animate-spin text-uerj-blue dark:text-yellow-400" />
               <span>Carregando seus tópicos...</span>
             </div>
           ) : meusTopicos.length > 0 ? (
@@ -220,20 +222,20 @@ export function Profile({ onBackToFeed }: ProfileProps) {
               <TopicCard key={topic.id} {...topic} />
             ))
           ) : (
-            <div className="bg-white p-8 rounded-2xl border border-slate-100 text-center text-xs text-slate-500">
+            <div className="bg-white dark:bg-[#1E1E1E] p-8 rounded-2xl border border-slate-100 dark:border-[#2F2F2F] text-center text-xs text-slate-500 dark:text-zinc-400">
               Você ainda não publicou nenhum tópico no fórum.
             </div>
           )
         )}
 
         {activeTab === 'replies' && (
-          <div className="bg-white p-8 rounded-2xl border border-slate-100 text-center text-xs text-slate-500">
+          <div className="bg-white dark:bg-[#1E1E1E] p-8 rounded-2xl border border-slate-100 dark:border-[#2F2F2F] text-center text-xs text-slate-500 dark:text-zinc-400">
             Nenhuma resposta recente registrada.
           </div>
         )}
 
         {activeTab === 'saved' && (
-          <div className="bg-white p-8 rounded-2xl border border-slate-100 text-center text-xs text-slate-500">
+          <div className="bg-white dark:bg-[#1E1E1E] p-8 rounded-2xl border border-slate-100 dark:border-[#2F2F2F] text-center text-xs text-slate-500 dark:text-zinc-400">
             Nenhum item salvo no momento.
           </div>
         )}
